@@ -88,4 +88,6 @@ def weighted_graph_mapping(G):
         weight = G[source][target]['weight']
         if weight is not 1:
             G.remove_edge(source, target)
+            G.add_edges_from([(source, source+target),(target, source+target)])
+            w
     pass
