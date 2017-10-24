@@ -18,28 +18,32 @@ def isomorphism_measure(G, H): #high result means low similarity
     H_clone = H.copy()
 
     D = __simmetric_difference(G_clone, H_clone)
-    if D.nodes > 80 and D.edges > 50: vertex_cover = approximation.min_weighted_vertex_cover(D)
-    else: vertex_cover = graph.minimum_vertex_cover(D)
+    if D.number_of_nodes() > 80 or D.number_of_edges() > 80:
+        vertex_cover = len(approximation.min_weighted_vertex_cover(D) )
+    else:
+        #if D.number_of_nodes() > 80 or D.number_of_edges() > 50:
+        vertex_cover = approximation.min_weighted_vertex_cover(D)
+        #vertex_cover = graph.dense_connected_components_minimum_vertex_cover(D) # not work !!!!!!!!!!!!!!!!
+        #else: vertex_cover = graph.minimum_vertex_cover(D)
 
-    print 'vertex cover :',vertex_cover
+    print 'vertex cover cardinality', vertex_cover
     #vertex cover is equal to the min nuber of nodes to delete to obtain 2 isomorphic graphs
     g_nodes = [n for n in G]
     h_nodes = [n for n in H]
     print 'edges',G.edges
     print 'edges',H.edges
-    common_nodes = set(g_nodes).intersection(h_nodes)
+    #common_nodes = set(g_nodes).intersection(h_nodes)
     #how map vertex_cover to a similarity value or dist value
     #similarity = len(common_nodes)/float(len(vertex_cover) )
-
-    return len(vertex_cover) #similarity
+    return vertex_cover #similarity
 
 
 def __simmetric_difference(G, H):
     # type: (nx.Graph, nx.Graph) -> nx.Graph
     g_nodes = [n for n in G]
-    print g_nodes
+    #print g_nodes
     h_nodes = [n for n in H]
-    print h_nodes
+    #print h_nodes
     nodes2add2g = set(h_nodes).difference(set(g_nodes))
     nodes2add2h = set(g_nodes).difference(set(h_nodes))
 
@@ -53,6 +57,9 @@ def __simmetric_difference(G, H):
     symm_diff_graph = nx.Graph()
     symm_diff_graph.add_edges_from(D.edges)
     print 'nodes in symmetric difference', len(symm_diff_graph.nodes)
+    print 'edges in symmetric difference', len(symm_diff_graph.edges)
+    #nx.draw(symm_diff_graph)
+    #plt.show()
     D = None
     #nx.draw(symm_diff_graph, with_labels=True)
     #plt.show()

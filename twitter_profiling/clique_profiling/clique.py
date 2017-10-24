@@ -3,16 +3,16 @@ from twitter_profiling.profiling_operators import intersection
 from twitter_clique import check_clique
 from twitter_clique.clique_profile_dao import CliqueProfileDao
 from bson.objectid import ObjectId
-import sys
+import sys, numpy as np
 from twitter_profiling.profiling_operators import similarity
 import networkx as nx
-import matplotlib.pyplot as plt
-from twitter_graph.graph import UndirectedGraph
+
 from twitter_profiling.profiling_operators.cohesion.set_cohesion import profiles_cohesion
 from twitter_profiling.profiling_operators.cohesion.graph_cohesion import cohesion_of_graph_profiles
 
 class Clique(object):
 
+    user_set_profiles ={}
     interests_data = {}
 
     def __init__(self, users, id):
@@ -181,18 +181,24 @@ class Clique(object):
         return cohesion
 
     def get_graph_cohesion(self, user_graphs = None): # not implemented yet !!!
-        if user_graphs is None:
-            user_graphs = [self.__compute_user_weight_on_clique_knowledge_graph(p) for p in self.get_users_profiles() ]
-            print 'usergraphs', user_graphs
-            user_graphs = list(filter(lambda x: x is not None, user_graphs))
-            print 'usergraphs', user_graphs
-        return cohesion_of_graph_profiles(user_graphs)
+        #type:(Clique, list)-> float
+        #if user_graphs is None:
+
+        user_graphs = [self.__compute_user_weight_on_clique_knowledge_graph(p) for p in self.get_users_profiles() ]
+        # print 'usergraphs', user_graphs
+        user_graphs = list(filter(lambda x: x is not None, user_graphs))
+        # print 'usergraphs', user_graphs
+
+        c = cohesion_of_graph_profiles(user_graphs)
+        print len(user_graphs), 'analyzed profiles'
+        return c
 
     def __compute_user_weight_on_clique_knowledge_graph(self, profile):
         #type:(Clique, list(str))->nx.Graph
         try:
             mapping = self.get_profile_interests_names(profile['info']['interests']['all'].keys() )
             G = self.get_knowledge_graph_from_users_kgraphs().copy()
+            print 'G', len(G.nodes), len(G.edges)
             for n in G.nodes:
             #n could be an interest id or a display name but here i suppose it s an id because i m taking it directly from db
                 if n is not 'User':
@@ -203,8 +209,7 @@ class Clique(object):
                     w = profile['info']['interests']['all'][interest_id]['score']
                     #print 'weight', w
                     G['User'][n]['weight'] = w
-            labels = nx.get_edge_attributes(G, 'weight')
-            print 'labels', labels
+
             return G
         except KeyError as e: print 'error', e
         return  None
@@ -277,51 +282,54 @@ class Clique(object):
                 self.__set_interest_data(p)
 
 
-c1 = Clique([
-        "1148580931",
-		"728283781",
-		"525208028",
-		"17387058",
-		"19267015",
-		"462346627",
-		"20517081",
-		"20600235",
-		"21870376",
-		"22903129",
-		"24871896",
-		"29337915",
-		"53047484",
-		"63525184",
-		"86740435",
-		"162779090",
-		"164786871",
-		"456739709"
-    ],'5946a8f0f810d569224b8c6e')#.get_knowledge_graph()
-c2 = Clique([
-        "1606948220",
-		"1114036494",
-		"16681420",
-		"17387058",
-		"19267015",
-		"20517081",
-		"20600235",
-		"21870376",
-		"22903129",
-		"24871896",
-		"53047484",
-		"67606740",
-		"67613844",
-		"86740435",
-		"140409019",
-		"462346627"
-], "5946a6a0f810d56922464552")
-
-# G = UndirectedGraph()
-# G.set_graph(c1.get_knowledge_graph_from_users_kgraphs() )
-# #G.set_graph(c1.get_knowledge_graph_from_set_profiles() )
-# print len(G.get_graph().nodes), len(G.get_graph().edges)
-# G.draw_with_labels()
-cohesion = c1.get_graph_cohesion()
-print 'cohesion of c1 clique ', cohesion
-#isomorphism_distance = c1.profile_graph_similarity_with(c2)
-#print isomorphism_distance
+# c1 = Clique([
+#         "1148580931",
+# 		"728283781",
+# 		"525208028",
+# 		"17387058",
+# 		"19267015",
+# 		"462346627",
+# 		"20517081",
+# 		"20600235",
+# 		"21870376",
+# 		"22903129",
+# 		"24871896",
+# 		"29337915",
+# 		"53047484",
+# 		"63525184",
+# 		"86740435",
+# 		"162779090",
+# 		"164786871",
+# 		"456739709"
+#     ],'5946a8f0f810d569224b8c6e')#.get_knowledge_graph()
+# c2 = Clique([
+#         "1606948220",
+# 		"1114036494",
+# 		"16681420",
+# 		"17387058",
+# 		"19267015",
+# 		"20517081",
+# 		"20600235",
+# 		"21870376",
+# 		"22903129",
+# 		"24871896",
+# 		"53047484",
+# 		"67606740",
+# 		"67613844",
+# 		"86740435",
+# 		"140409019",
+# 		"462346627"
+# ], "5946a6a0f810d56922464552")
+#
+#
+# cohesion_2 = c2.get_graph_cohesion()
+# cohesion_1 = c1.get_graph_cohesion()
+# print 'cohesion of c1 clique ', cohesion_1
+# print 'cohesion of c2 clique ', cohesion_2
+#
+# chs = [cohesion_1, cohesion_2, 30.0, 440.0]
+# chs.sort()
+# print chs
+#
+# plt.hist(chs, 10)
+# plt.show()

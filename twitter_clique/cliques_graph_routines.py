@@ -51,7 +51,7 @@ def generate(cliques): #confusional
     return g
 
 
-def __the_closers(clique, k=1):
+def __the_closers(clique, k=1): #move to Clique class ?
     return get_similar_cliques_on_nodes(clique, k)  # clique as in cliques2analyze
 
 
