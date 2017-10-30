@@ -1,10 +1,11 @@
 import itertools
 import networkx as nx
 import matplotlib.pyplot as plt
+from multiprocessing import Pool
 
 
 def rawIntersection(user_profiles):
-    """ :type user_profiles: List of set """
+    # type:(list[set])->set
     print('processing raw intersection on', len(user_profiles) )
     try:
         raw_intersection = set.intersection(*user_profiles)
@@ -12,18 +13,23 @@ def rawIntersection(user_profiles):
         return raw_intersection
     except TypeError as e :
         print('input has to be a list of set', e)
-    return None
+
 
 
 def minus_k_intesection(user_profiles, k=1):
     profiles_number = len(user_profiles)
     print (profiles_number, 'passed profiles')
     user_combinations = list(itertools.combinations(user_profiles, profiles_number - k) )
-    #print(user_profiles)
-    print(user_combinations)
+
+    # pool = Pool(len(user_combinations))
+    # profiles = pool.map(rawIntersection, user_combinations)
     profiles = []
+
     for combination in user_combinations:
-        profiles.append(rawIntersection(combination) )
+        i = rawIntersection(combination)
+        if i is not None:
+            profiles.append(i)
+
     p = set.union(*profiles)
     print('solution', p)
     return p
@@ -35,13 +41,25 @@ def minus_k_intersection_of_graph(user_graphs, k=1):
     print (profiles_number, 'passed profiles')
     map_profiles = range(0, profiles_number)
     user_combinations = list(itertools.combinations(map_profiles, profiles_number - k))
+    graph_combiantions = []
+
+    # for c in user_combinations:
+    #     iteration_on_graphs = []
+    #     for index in c:
+    #         iteration_on_graphs.append(user_graphs[index])
+    #     graph_combiantions.append(iteration_on_graphs)
     intersection_graphs = []
+
+    # pool = Pool(len(user_combinations) )
+    # intersection_graphs = pool.map(graph_intersection(user_graphs), graph_combiantions)
+
     for c in user_combinations:
         iteration_on_graphs = []
         for index in c:
             iteration_on_graphs.append(user_graphs[index])
         g = graph_intersection(iteration_on_graphs)
         intersection_graphs.append(g)
+
     G = __graph_union(intersection_graphs)
     return G
 
@@ -69,6 +87,24 @@ def __graph_union(graphs):
     return clean_U
 
 
+
+def minus_k_intesection_optimized(user_profiles, k=1):
+    profiles_number = len(user_profiles)
+    print (profiles_number, 'passed profiles')
+    user_combinations = list(itertools.combinations(user_profiles, profiles_number - k) )
+
+    pool = Pool(len(user_combinations))
+    profiles = pool.map(rawIntersection, user_combinations)
+    # profiles = []
+
+    # for combination in user_combinations:
+    #     i = rawIntersection(combination)
+    #     if i is not None:
+    #         profiles.append(i)
+
+    p = set.union(*profiles)
+    print('solution', p)
+    return p
 #minus_kIntesection([{1,2,3,4},{2,4,5},{10,2,3,4,5,6},{10,2,3,4,5},{10,2,3,4,5,6,44}])
 # G = nx.Graph()
 # G.add_edges_from([(1,2),(2,3),(3,5),(1,5)])

@@ -3,6 +3,9 @@ import networkx as nx
 from networkx.algorithms import approximation
 import matplotlib.pyplot as plt
 from twitter_graph import graph
+from scipy.spatial.distance import cosine
+import sys
+
 
 def jaccard(set_a, set_b):
     set_a = set(set_a)
@@ -10,6 +13,14 @@ def jaccard(set_a, set_b):
 
     return float(len(set_a.intersection(set_b) ) ) / float(len(set_a.union(set_b) ) )
 
+def vector_distance(vectors):
+    try:
+        a = list(vectors[0])
+        b= list(vectors[1])
+    except TypeError:
+        print 'vector smilarity needs array like inputs'
+        sys.exit(1)
+    return cosine(a,b)
 
 
 def isomorphism_measure(G, H): #high result means low similarity
@@ -22,7 +33,7 @@ def isomorphism_measure(G, H): #high result means low similarity
         vertex_cover = len(approximation.min_weighted_vertex_cover(D) )
     else:
         #if D.number_of_nodes() > 80 or D.number_of_edges() > 50:
-        vertex_cover = approximation.min_weighted_vertex_cover(D)
+        vertex_cover = len(approximation.min_weighted_vertex_cover(D) )
         #vertex_cover = graph.dense_connected_components_minimum_vertex_cover(D) # not work !!!!!!!!!!!!!!!!
         #else: vertex_cover = graph.minimum_vertex_cover(D)
 
