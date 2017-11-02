@@ -7,14 +7,11 @@ class DbInstance:
     def __init__(self, port, db_name):  #not usefuls using dbname here
         self.port = port
         self.db_name = db_name
-        if not self.dbs.has_key(db_name):
-            self.set_db_instance(port, db_name)
-            #db = MongoClient('localhost', port)[db_name]
-            #DbInstance.db = db
-            #DbInstance.dbs.update({db_name : db})
+        self.db = MongoClient('localhost', port)
+
 
     def getDbInstance(self): #deprecated
-        return self.find_db_instance(self.db_name)
+        return self.db[self.db_name]# self.find_db_instance(self.db_name)
 
     def find_db_instance(self, db_name):
         if not self.dbs.has_key(db_name):
@@ -26,4 +23,4 @@ class DbInstance:
         """:type db_name: string """
         self.port = port
         self.db_name = db_name
-        DbInstance.dbs.update({db_name: MongoClient('localhost', port)[db_name]})
+        self.dbs.update({db_name: MongoClient('localhost', port)[db_name]})
