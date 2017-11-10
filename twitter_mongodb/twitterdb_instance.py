@@ -20,7 +20,7 @@ class DbInstance:
 
 
     def set_db_instance(self, port, db_name):
-        """:type db_name: string """
+        # type:(DbInstance, int, str)-> None
         self.port = port
         self.db_name = db_name
         self.dbs.update({db_name: MongoClient('localhost', port)[db_name]})

@@ -4,7 +4,8 @@ from networkx.algorithms import approximation
 import matplotlib.pyplot as plt
 from twitter_graph import graph
 from scipy.spatial.distance import cosine
-import sys
+from sklearn.metrics.pairwise import cosine_similarity
+import sys, numpy as np
 
 
 def jaccard(set_a, set_b):
@@ -14,6 +15,7 @@ def jaccard(set_a, set_b):
     return float(len(set_a.intersection(set_b) ) ) / float(len(set_a.union(set_b) ) )
 
 def vector_distance(vectors):
+    #type:(list)->float
     try:
         a = list(vectors[0])
         b= list(vectors[1])
@@ -21,6 +23,20 @@ def vector_distance(vectors):
         print 'vector smilarity needs array like inputs'
         sys.exit(1)
     return cosine(a,b)
+
+def vector_similarity(a,b):
+    # type:(list, list)->float
+    try:
+        a = list(a)
+        b= list(b)
+    except TypeError:
+        print 'wrong type input vector distance function'
+        sys.exit(1)
+    matrix = [a,b]
+    #matrix = np.array(matrix)
+    result = cosine_similarity(matrix)
+    return result[0][1] # array([[ 1.        ,  0.38709324],
+                                #[ 0.38709324,  1.        ]]) that s an example of result
 
 
 def isomorphism_measure(G, H): #high result means low similarity

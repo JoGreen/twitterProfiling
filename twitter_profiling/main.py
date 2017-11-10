@@ -1,8 +1,8 @@
 from twitter_clique import clique_dao
-from twitter_clique.cliques_graph_routines import generate
-from twitter_graph.graph import UndirectedGraph#from twitter_profiling.clique_profiling.clique import Clique
+
 from clique_profiling.clique import Clique
 from twitter_profiling.clique_profiling.clique_graph import neighbour_graph
+from twitter_profiling.clique_profiling.routines import expand
 import matplotlib.pyplot as plt
 import networkx as nx
 from multiprocessing import Pool
@@ -19,13 +19,16 @@ def cohesion(c):
 def multithread(numb_proc):
     # type:(int)->list[float]
     #cliques = clique_dao.get_limit_maximal_clique_on_specific_users_friendship_count(250, 2000)
-    cliques= clique_dao.get_limit_maximal_cliques_on_valid_users(10000) #limit parameter
-    pool = Pool(numb_proc)
-    # cohesion_values = []
-    clqs = [c for c in cliques]
-    cliques.close()
-    # # cohesion_values = [pool.apply_async(os.getpid, ()) for c in cliques]
-    cohesion_values = pool.map(cohesion, clqs)
+    cliques= clique_dao.get_limit_maximal_cliques_on_valid_users(1000) #limit parameter
+    print __name__
+    if __name__ == 'twitter_profiling.main':
+        pool = Pool(numb_proc)
+        # cohesion_values = []
+        clqs = [c for c in cliques]
+        print len(clqs), 'prima del multiprocess'
+        cliques.close()
+        # # cohesion_values = [pool.apply_async(os.getpid, ()) for c in cliques]
+        cohesion_values = pool.map(cohesion, clqs)
 
 
     # for c in cliques:
@@ -33,9 +36,7 @@ def multithread(numb_proc):
     #     chs = cohesion(c)
     #     cohesion_values.append(chs)
 
-    return cohesion_values
-
-
+        return cohesion_values
 
 
 #####cluster membership
@@ -71,12 +72,17 @@ def compute_plot_clique_cohesion():
     plt.hist(cohesion_values, int(bins))
     plt.xticks(np.arange(0, max, tick_frequency))
     plt.show()
+###########################################
+def step():
+    cliques = clique_dao.get_limit_maximal_cliques_on_valid_users(10)
+    i= -1
+    for c in cliques:
+        i = i+ 1
+        if i is 2:
+            clq = Clique(c['nodes'], c['_id'])
+            expand(clq)
+            # neighbour_graph(clq)
 
 
-cliques = clique_dao.get_limit_maximal_cliques_on_valid_users(200)
-i= -1
-for c in cliques:
-    i = i+ 1
-    if i is 15:
-        clq = Clique(c['nodes'], c['_id'])
-        neighbour_graph(clq)
+
+step()

@@ -11,7 +11,7 @@ import networkx as nx
 from multiprocessing import Pool
 from twitter_profiling.profiling_operators.cohesion.set_cohesion import profiles_cohesion
 from twitter_profiling.profiling_operators.cohesion.graph_cohesion import cohesion_of_graph_profiles
-from twitter_profiling.profiling_operators.cohesion.vector_cohesion import cosine_cohesion
+from twitter_profiling.profiling_operators.cohesion.vector_cohesion import cosine_cohesion_distance
 from pymongo.cursor import Cursor
 
 
@@ -57,26 +57,58 @@ class Clique(object):
         return clique_status['exist_all']
 
     def get_weighted_profile(self):
+        if not len(self.weighted_profile.values() ) > 0:
+            self.compute_weighted_profile()
         return self.weighted_profile
 
     def get_the_closers(self, k=1):  # move to Clique class ?
         # type: (Clique, int)->list[Clique]
         closers = get_similar_cliques_on_nodes(self.get_id(), self.users, k)
-        return [Clique(c['nodes'], c['_id']) for c in closers]
+        close_cqls = [Clique(c['nodes'], c['_id']) for c in closers]
+        closers.close()
+        return close_cqls
 
     def get_neighbours(self, k= 1, cohesion_type= 'vectors' ):
-        # type:(Clique, int, str)->list[Clique]
+        # type:(Clique, int, str)->list(dict)
         neighbours = []
         closers = self.get_the_closers(k)
         if closers is not None and len(closers) > 0:
-            pool = Pool(8)
+            # pool = Pool(8)
+            cliques =[]
             if cohesion_type is 'vectors':
-                cliques = pool.map(get_clique_with_minimum_vectors_cohesion, closers)
-            else:
-                cliques = pool.map(get_clique_with_minimum_graph_cohesion, closers)
+                # cliques = pool.map(get_clique_with_minimum_vectors_cohesion, closers)
+                for c in closers:
+                    cliques.append(get_clique_with_minimum_vectors_cohesion(c))
+            else:pass
+                #cliques = pool.map(get_clique_with_minimum_graph_cohesion, closers)
+            #pool.close()
             neighbours = [n for n in list(cliques) if n is not None]
             return neighbours
 
+    def compute_weighted_profile(self, with_profiles_vectors_scores= False):
+        # self.get_vectors_cohesion()
+        raw_profiles = self.get_users_profiles()  # raw json from db
+        # profiles_vector = []
+        profiles_vector_score = []
+        for raw_prof in raw_profiles:
+            profile = self.__get_interests_from_profile(raw_prof)
+            if profile is not None:
+                # profile = set(profile).intersection(set(self.get_profile() ) )
+                # profiles_vector.append(profile)
+                scores = []
+                if self.get_profile() is None: return 1.0
+                for interest in self.get_profile():
+                    try:
+                        scores.append(raw_prof['info']['interests']['all'][interest]['score'])
+                    except KeyError:
+                        scores.append(0)
+                profiles_vector_score.append(scores)
+        clique_weights = [np.mean(values) for values in np.array(profiles_vector_score).T]
+        for interest in self.get_profile():
+            index = self.get_profile().index(interest)
+            self.weighted_profile[interest] = clique_weights[index]
+        if with_profiles_vectors_scores is True:
+            return profiles_vector_score
 
 
     def __compute_profile(self):
@@ -95,7 +127,7 @@ class Clique(object):
         # self.profile = intersection.rawIntersection(users_interests)
         self.profile = list(
             intersection.minus_k_intesection(users_interests, 1))  # add a parameter to overwrite default k = 1
-        self.__save_profile()
+        # self.__save_profile()
         # self.__print_profile_interests()
 
 
@@ -181,6 +213,14 @@ class Clique(object):
         #type:(Clique, Clique)->int
         return similarity.isomorphism_measure(self.get_knowledge_graph_from_users_kgraphs(), clique.get_knowledge_graph_from_users_kgraphs())
 
+    def get_profile_vector_similarity_with(self, clique):
+        all_interests = set(self.get_weighted_profile().keys() ).union(set(clique.get_weighted_profile().keys() ))
+        for i in all_interests:
+            if not self.get_weighted_profile().has_key(i):
+                self.get_weighted_profile()[i] = 0
+            if not clique.get_weighted_profile().has_key(i):
+                clique.get_weighted_profile()[i] = 0
+        return similarity.vector_similarity(self.get_weighted_profile().values(), clique.get_weighted_profile().values() )
 
     def get_id(self):
         return self.clique
@@ -223,27 +263,8 @@ class Clique(object):
         return c
 
     def get_vectors_cohesion(self):
-        raw_profiles = self.get_users_profiles() #raw json from db
-        # profiles_vector = []
-        profiles_vector_score =[]
-        for raw_prof in raw_profiles:
-            profile = self.__get_interests_from_profile(raw_prof)
-            if profile is not None:
-                #profile = set(profile).intersection(set(self.get_profile() ) )
-                # profiles_vector.append(profile)
-                scores = []
-                if self.get_profile() is None: return 1.0
-                for interest in self.get_profile():
-                    try:
-                        scores.append(raw_prof['info']['interests']['all'][interest]['score'] )
-                    except KeyError:
-                        scores.append(0)
-                profiles_vector_score.append(scores)
-        clique_weights = [np.mean(values) for values in np.array(profiles_vector_score).T]
-        for interest in self.get_profile():
-            index = self.get_profile().index(interest)
-            self.weighted_profile[interest] = clique_weights[index]
-        return cosine_cohesion(profiles_vector_score) #in term of distance
+        profiles_vector_score = self.compute_weighted_profile(with_profiles_vectors_scores= True)
+        return cosine_cohesion_distance(profiles_vector_score) #in term of distance
 
     def __compute_user_weight_on_clique_knowledge_graph(self, profile):
         #type:(Clique, list(str))->nx.Graph
@@ -277,18 +298,18 @@ class Clique(object):
         try:
             interest_ids = set(profile['info']['interests']['all'].keys())
         except Exception as e:
-            print('error parsing interests', e)
-
+            # print('error parsing interests', e)
+            pass
         try:
             interest_ids.add(profile['info']['language']['primary']['name'])
         except Exception as e:
-            print('error parsing language', e)
-
+            # print('error parsing language', e)
+            pass
         try:
             interest_ids.add(profile['info']['location']['primary']['country']['name'])
         except Exception as e:
-            print('error parsing location', e)
-
+            # print('error parsing location', e)
+            pass
         finally:
             if (interest_ids != None and len(interest_ids) > 2):
                 return interest_ids
@@ -332,19 +353,49 @@ class Clique(object):
             profiles = self.get_users_profiles()  # return list
             for p in profiles:
                 self.__set_interest_data(p)
+
+
+    # def compute_weighted_profile(self):
+    #     raw_profiles = self.get_users_profiles()  # raw json from db
+    #     # profiles_vector = []
+    #     profiles_vector_score = []
+    #     for raw_prof in raw_profiles:
+    #         profile = self.__get_interests_from_profile(raw_prof)
+    #         if profile is not None:
+    #             scores = []
+    #             if self.get_profile() is None: pass # return 1.0
+    #             for interest in self.get_profile():
+    #                 try:
+    #                     scores.append(raw_prof['info']['interests']['all'][interest]['score'])
+    #                 except KeyError:
+    #                     scores.append(0)
+    #             profiles_vector_score.append(scores)
+    #     clique_weights = [np.mean(values) for values in np.array(profiles_vector_score).T]
+    #     for interest in self.get_profile():
+    #         index = self.get_profile().index(interest)
+    #         self.weighted_profile[interest] = clique_weights[index]
+
+    def get_weighted_profile(self):
+        # type:(Clique)->dict
+        if len(self.weighted_profile.values() ) is 0:
+            self.compute_weighted_profile()
+        return self.weighted_profile
+
 ###################################################################################
 graph_cohesion_threeshold = 1.2
 vector_cohesion_threeshold = 0.008
 
 def get_clique_with_minimum_graph_cohesion(clique):
-    # type:(Clique)->Clique
-    if clique.get_graph_cohesion() < graph_cohesion_threeshold:
-        return clique
+    # type:(Clique)->dict
+    cohesion = clique.get_graph_cohesion()
+    if cohesion < graph_cohesion_threeshold:
+        return {'clique':clique, 'cohesion': cohesion}
 
 def get_clique_with_minimum_vectors_cohesion(clique):
     # type:(Clique)->Clique
-    if clique.get_vectors_cohesion() < vector_cohesion_threeshold:
-        return clique
+    cohesion = clique.get_vectors_cohesion()
+    if cohesion < vector_cohesion_threeshold:
+        return {'clique':clique, 'cohesion': cohesion}
 
 def get_neighbours(clique):
     # type:(Clique)->list[Clique]

@@ -109,7 +109,7 @@ def __is_valid_vertex(vertex, G):
     return is_vertex
 
 
-def weighted_graph_mapping(WG): #something wrong
+def weighted_graph_mapping(WG): #something wrong-> devide for 10 is not good because small values go to 0 ? anyway there is not strict correspondance with vector cohesion
     # type: (nx.Graph)->nx.Graph
 
     edges2delete = []
