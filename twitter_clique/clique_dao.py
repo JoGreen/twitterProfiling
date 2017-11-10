@@ -5,6 +5,7 @@ from pymongo.cursor import Cursor
 from twitter_profiling.user_profiling.user_dao import UserDao
 from twitter_profiling.user_profiling.profile_dao import ProfileDao
 import time, sys
+from pymongo.errors import InvalidId
 
 def get_maximal_cliques(grower_than = 6):
     # type: (int) -> Cursor
@@ -74,7 +75,7 @@ def get_similar_cliques_on_nodes(clique_id, clique_nodes, k=1):  # check if id n
     query = {"_id": {"$ne": clique_id}, "count": {"$gt": n_nodes - k}, "$or": []}
     for comb in combination_of_nodes:
         query["$or"].append({"nodes": {"$all": list(comb)}})
-    print(query)
+    #print(query)
     start = time.time()
 
     cliques_cursor = db['cliques2analyze'].find(query)
@@ -85,6 +86,15 @@ def get_similar_cliques_on_nodes(clique_id, clique_nodes, k=1):  # check if id n
     # cliques = [c for c in cliques_cursor]
     return cliques_cursor
 
+
+def get_cliques(ids):
+    try:
+        oids = [ObjectId(id) for id in ids]
+    except InvalidId: print 'not valid ids passed to get_cliques in clique_dao'
+    except Exception: print 'generic error during conversion to ObjectID'
+    db = DbInstance(27017, 'twitter').getDbInstance()
+    cliques = db['cliques2analyze'].find({'_id': {'$in': oids}})
+    return cliques
 
 # print get_maximal_cliques_on_valid_users().count()
 # clq = {
