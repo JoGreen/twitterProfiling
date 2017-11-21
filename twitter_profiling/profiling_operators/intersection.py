@@ -1,4 +1,4 @@
-import itertools
+import itertools, sys
 import networkx as nx
 import matplotlib.pyplot as plt
 from multiprocessing import Pool
@@ -6,14 +6,14 @@ from multiprocessing import Pool
 
 def rawIntersection(user_profiles):
     # type:(list[set])->set
-    print('processing raw intersection on', len(user_profiles) )
+    # print('processing raw intersection on', len(user_profiles) )
     try:
         raw_intersection = set.intersection(*user_profiles)
         #print(raw_intersection)
         return raw_intersection
     except TypeError as e :
         print('input has to be a list of set', e)
-
+        sys.exit(1)
 
 
 def minus_k_intesection(user_profiles, k=1):
@@ -25,13 +25,14 @@ def minus_k_intesection(user_profiles, k=1):
     # profiles = pool.map(rawIntersection, user_combinations)
     profiles = []
 
-    for combination in user_combinations:
-        i = rawIntersection(combination)
-        if i is not None:
-            profiles.append(i)
+
+    profiles = map(rawIntersection, user_combinations)
+    # profiles = filter(lambda i : i != None, profiles) #is ut useful ?
+
 
     p = set.union(*profiles)
-    print('solution', p)
+    print 'profile solution built using k-intersection'
+    print
     return p
 
 

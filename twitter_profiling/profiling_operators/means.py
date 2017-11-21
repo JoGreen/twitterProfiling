@@ -1,7 +1,13 @@
-import numpy as np
+import numpy as np, sys
 def geometric_mean(iterable):
     # type: (list[float])-> float
-    if 0. in iterable: # no value = 0 ow product will be 0
+    try:
+        iterable = list(iterable)
+    except Exception:
+        print 'wrong type input geometric_mean'
+        sys.exit(1)
+
+    while 0. in iterable: # no value = 0 ow product will be 0
         i = iterable.index(0.)
         iterable[i] = 1 * 10**(-16)
 

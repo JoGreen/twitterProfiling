@@ -7,10 +7,13 @@ from twitter_profiling.user_profiling.profile_dao import ProfileDao
 import time, sys
 from pymongo.errors import InvalidId
 
+collection = 'comms'
+
 def get_maximal_cliques(grower_than = 6):
     # type: (int) -> Cursor
     db = DbInstance(27017, 'twitter').getDbInstance()
-    cliques = db['cliques2analyze'].find({"count": {"$gt": grower_than}})
+    cliques = db[collection].find({"count": {"$gt": grower_than}, "com_id":{"$exists": False}},
+                                     no_cursor_timeout= True)
     # print(type(cliques) )
     return cliques
 
@@ -30,10 +33,10 @@ def get_limit_maximal_cliques_on_valid_users(limit, gt= 7):
 def get_maximal_cliques_on_valid_users(gt= 7): # doesn t work
     us2avoid = ProfileDao().get_users_without_interests()
     print us2avoid.count()
-    us = [u for u in us2avoid]
+    us = [u['user'] for u in us2avoid]
     #for i in range(0, 1929): us.pop()
     print len(us)
-    #us=['10','19']
+
     db = DbInstance(27017, 'twitter').getDbInstance()
 
     cliques = db['cliques2analyze'].find({'nodes':{'$nin': us} ,
@@ -46,7 +49,7 @@ def get_maximal_clique_on_specific_users_friendship_count(friendship_count, gt =
 
     db = DbInstance(27017, 'twitter').getDbInstance()
 
-    cliques = db['cliques2analyze'].find({'nodes': {'$in': users}, 'count':{'$gt':gt}}, no_cursor_timeout=True)
+    cliques = db[collection].find({'nodes': {'$in': users}, 'count':{'$gt':gt}}, no_cursor_timeout=True)
 
     return cliques
 
@@ -78,7 +81,7 @@ def get_similar_cliques_on_nodes(clique_id, clique_nodes, k=1):  # check if id n
     #print(query)
     start = time.time()
 
-    cliques_cursor = db['cliques2analyze'].find(query)
+    cliques_cursor = db[collection].find(query)
 
     end = time.time()
     print('for one query', end - start)
@@ -89,12 +92,24 @@ def get_similar_cliques_on_nodes(clique_id, clique_nodes, k=1):  # check if id n
 
 def get_cliques(ids):
     try:
-        oids = [ObjectId(id) for id in ids]
-    except InvalidId: print 'not valid ids passed to get_cliques in clique_dao'
-    except Exception: print 'generic error during conversion to ObjectID'
+        oids = map(ObjectId ,ids)
+    except InvalidId:
+        print 'not valid ids passed to get_cliques in clique_dao'
+        oids = ids
+    except Exception:
+        print 'generic error during conversion to ObjectID'
+        oids = ids
     db = DbInstance(27017, 'twitter').getDbInstance()
-    cliques = db['cliques2analyze'].find({'_id': {'$in': oids}})
+    cliques = db[collection].find({'_id': {'$in': oids}})
     return cliques
+
+
+def create_dataset():
+    clqs = get_maximal_cliques_on_valid_users()
+    db = DbInstance(27017, 'twitter').getDbInstance()
+    cliques = list(clqs)
+    clqs.close()
+    db['comms'].insert_many(cliques)
 
 # print get_maximal_cliques_on_valid_users().count()
 # clq = {
@@ -113,10 +128,6 @@ def get_cliques(ids):
 #     "count": 9,
 #     "pt": "final"
 # }
-#
-# cliques = get_similar_cliques_on_nodes(clq, 2)
-# # for cliques in cliques_cursors:
-# for c in cliques:
-#     print('clique:', c['_id'])
-# print('end')
-# # c = getLimitMaximalCliques(100)
+
+
+#create_dataset()
