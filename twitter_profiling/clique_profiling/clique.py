@@ -40,6 +40,7 @@ class Clique(object):
             self.clique = id
 
             if delete_if_useless and len(self.get_profile() ) < 4:
+                print 'autodestroying in 3 2 1 cause i m useless sigh sigh siBBBOOOOOOOOOMMMMMMM'
                 community_dao.delete([self.get_id()] )
 
     def __eq__(self, other):

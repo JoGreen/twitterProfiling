@@ -71,7 +71,7 @@ def delete(ids):
 def insert(comms):
     # type:(list[Community])->None
     if comms == None or len(comms) == 0:
-        return None
+        return None # it happens when a clique/communitiy has no neighbours
 
     db = DbInstance(port, db_name).getDbInstance()
     try:
@@ -84,14 +84,24 @@ def insert(comms):
     inserted = db[collection].insert_many(docs)
     print 'inserted new communities ids', len(inserted.inserted_ids)
 
+def get_communities_with_specific_cliques(cliques_ids):
+    try:
+        cliques_ids = list(cliques_ids)
+    except TypeError:
+        print 'need an iterable to get communities with specific cliques from db '
+        sys.exit(1)
+    db = DbInstance(port, db_name).getDbInstance()
+    comms = db[collection].find({'cliques': {'$in': cliques_ids}})
+    return comms
+
 def get_communities(comm_ids):
     try:
         comm_ids = list(comm_ids)
     except TypeError:
-        print 'need an iterable to get communities from db'
+        print 'need an iterable to get communities with specific cliques from db '
         sys.exit(1)
     db = DbInstance(port, db_name).getDbInstance()
-    comms = db[collection].find({'cliques': {'$in': comm_ids} } )
+    comms = db[collection].find({'com_id': {'$in': comm_ids}})
     return comms
 
 def __converter__(com):

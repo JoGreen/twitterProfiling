@@ -24,7 +24,7 @@ def neighbour_graph_with_id(clq, visited, lev=1):
 
     if lev < max_depth :
         neighbours = [(n['clique'], visited, lev + 1) for n in neighb2_and_cohesion
-                      if not n['clique'].get_id() in visited]
+                      if not n['clique'].get_id() in visited] # no nodes already expanded
 
         if len(neighb2_and_cohesion) > 0:
             # pool= Pool(8)
@@ -38,9 +38,10 @@ def neighbour_graph_with_id(clq, visited, lev=1):
                 H = nx.compose_all(graphs)
 
 
-
+    #should consider to check for communities presence with too low cohesion to avoid to have entering edges.
+    # at the moment they could have in edges also if check_acceptance return False, but if its cohesion don t gr
     edges = [(clq.get_id(), n['clique'].get_id(), clq.get_profile_vector_similarity_with(n['clique']) )
-             for n in neighb2_and_cohesion]
+             for n in neighb2_and_cohesion] #used because it presents also nodes already expanded
 
     G = nx.DiGraph()
     G.add_weighted_edges_from(edges)

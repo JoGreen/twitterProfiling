@@ -7,8 +7,9 @@ import sys
 from twitter_clique import clique_dao
 from twitter_profiling.clique_profiling.clique import Clique
 from twitter_profiling.clique_profiling.clique_graph import neighbour_graph, neighbour_graph_with_id
+from twitter_profiling.clique_profiling.utility import constructor
 from twitter_profiling.community.community import Community
-from twitter_profiling.community.dao.community_dao import delete, insert, get_communities
+from twitter_profiling.community.dao.community_dao import delete, insert, get_communities_with_specific_cliques
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 
@@ -196,7 +197,7 @@ def __fusion_4id_graph_not_in_use(communities, src, dst):
     return community
 
 
-
+# this method has to be splitted in 4 !!! important to mantain code
 def __fusion_4id_graph(communities, src, dst):
     # type:(dict, str, str)-> (Community, object)
     # communities is a dict, its values have type Community
@@ -222,6 +223,7 @@ def __fusion_4id_graph(communities, src, dst):
             cliques.append(Clique(c['nodes'], c['_id']))
         clqs.close()
 
+    # fusion between cliques
     if (not is_src_comm) and (not is_dst_comm):
         try:
             users = set(cliques[0].users).union(set(cliques[1].users))
@@ -231,32 +233,45 @@ def __fusion_4id_graph(communities, src, dst):
             try:
                 cliques[0]
                 to_delete = [x for x in [src, dst] if not x == cliques[0].get_id() ]
+                to_delete = to_delete[0]
             except IndexError: to_delete = src
-        return None, to_delete
+            return None, to_delete
 
     else:
 
-        try:
+        try: # fusion between community and clique
             communities[src].fusion(cliques[0] )
             community = communities[src]
         except Exception:
-            try:
+            try: # fusion between community and clique
                 communities[dst].fusion(cliques[0] )
                 community = communities[dst]
             except Exception:
-                try:
+                try: # fusion between communities
                     communities[dst].fusion(communities[src])
                     delete([src])
                     del communities[src]
                     community = communities[dst]
                 except Exception as e:
-                    print 'fusion impossible---error-> usually it search for a clique already deleted but at the same time it has loaded it in the graph..it s a bug i don t realize how to prevent'
-                    print len(cliques), 'cliques retrieved'
-                    comms_retrieved = list(get_communities([src, dst]))
-                    if len(comms_retrieved) > 0:
-                        print 'found one or both communities in the db .. so no fusion at this step..there is a clique you should not consider'
-                        if is_src_comm == False: return None, src
-                        if is_dst_comm == False: return None, dst
+                    # this case could happen resuming computation after a stop..all communities are not loaded in memory so ..you need to load them
+                    if is_dst_comm and is_src_comm:
+                        comms = get_communities_with_specific_cliques([src, dst])
+                        comms = map(constructor, comms)
+                        if len(comms) > 2:
+                            print '2 communities ids to retrieve -> more than 2 communities returned'
+                            sys.exit(1)
+                        if not communities.has_key(comms[0]): communities[comms[0].get_id()] = comms[0]
+                        if not communities.has_key(comms[1]): communities[comms[1].get_id()] = comms[0]
+                        print 'communities dict updated'
+                        return __fusion_4id_graph(communities, src, dst)
                     else:
-                        sys.exit(1)
+                        print 'fusion impossible---error-> usually it search for a clique already deleted but at the same time it has loaded it in the graph..it s a bug i don t realize how to prevent'
+                        print len(cliques), 'cliques retrieved'
+                        comms_retrieved = list(get_communities_with_specific_cliques([src, dst]))
+                        if len(comms_retrieved) > 0:
+                            print 'found one or both communities in the db .. so no fusion at this step..there is a clique you should not consider'
+                            if is_src_comm == False: return None, src
+                            if is_dst_comm == False: return None, dst
+                        else:
+                            sys.exit(1)
     return community, None
