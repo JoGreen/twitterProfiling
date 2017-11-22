@@ -103,7 +103,10 @@ def step(restart = False):
     for index, c in enumerate(cliques):
         print 'step n.', index
         clq = constructor(c, delete_if_useless=True) # return a clique or a community # Clique(c['nodes'], c['_id'])
-        if len(clq.get_profile() ) > minimum_num_of_interests and clq.enough_cohesion():
+
+        if len(clq.get_profile() ) > minimum_num_of_interests and \
+                clq.enough_cohesion() and not clq.get_id() in visited:
+
             G, visited = aggregation_step(clq, visited)
             print 'visited', len(visited), 'nodes'
             #print 'new step'
@@ -111,6 +114,7 @@ def step(restart = False):
         for id in visited:
             visited_file.write(str(id)+',')
         visited_file.close()
+
     print 'the end.'
     cliques.close()
 
