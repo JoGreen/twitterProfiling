@@ -47,7 +47,10 @@ def find_attractor(G, pagerank_with_node_weight=True):  # node with max gravity
             if len(orbital_gravities) == 0: orbital_gravities.append(0.)
             mean = np.mean(orbital_gravities)
             attraction_forces[dst] = mean
-        mapping_gravity = nx.pagerank_numpy(G, personalization=attraction_forces)
+        try:
+            mapping_gravity = nx.pagerank_numpy(G, personalization= attraction_forces)
+        except np.linalg.LinAlgError:
+            mapping_gravity = nx.pagerank_numpy(G)
 
     sorted_gravities = sorted(mapping_gravity.items(), key=operator.itemgetter(1), reverse=True)
     return sorted_gravities
@@ -260,8 +263,14 @@ def __fusion_4id_graph(communities, src, dst):
                         if len(comms) > 2:
                             print '2 communities ids to retrieve -> more than 2 communities returned'
                             sys.exit(1)
-                        if not communities.has_key(comms[0]): communities[comms[0].get_id()] = comms[0]
-                        if not communities.has_key(comms[1]): communities[comms[1].get_id()] = comms[0]
+                        try:
+                            if not communities.has_key(comms[0]): communities[comms[0].get_id()] = comms[0]
+                        except IndexError: pass
+
+                        try:
+                            if not communities.has_key(comms[1]): communities[comms[1].get_id()] = comms[0]
+                        except IndexError: pass
+
                         print 'communities dict updated'
                         return __fusion_4id_graph(communities, src, dst)
                     else:
