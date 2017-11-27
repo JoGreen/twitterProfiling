@@ -1,6 +1,7 @@
 from twitter_mongodb.twitterdb_instance import DbInstance
 from twitter_clique.clique_dao import get_cliques
 from bson.objectid import ObjectId
+from bson.errors import InvalidId
 from pymongo.cursor import Cursor
 import itertools, time, sys
 
@@ -15,23 +16,42 @@ def get_similar_community_on_nodes(_id, nodes, k=1):  # check if id needs castin
     try:
         nodes = list(nodes)
         _id = ObjectId(_id)
+        n_nodes = len(nodes)
+        query = {
+            "_id": {"$ne": _id},
+            "count": {"$gt": n_nodes - k},
+            "$and":[
+                {"$or": [{"accept_in_links": True}, {"accept_in_links":{"$exists": False} } ] },
+                {"$or":[]}
+            ]
+        }
     except TypeError:
-        print 'error input type in get_similar_cliques_on_nodes'
+        print 'nodes has to be an iterable---wrong type parameter in get_similar_community_on_nodes function'
         sys.exit(1)
+    except InvalidId:
+        n_nodes = len(nodes)
+        query = {
+            "com_id": {"$ne": _id},
+            "count": {"$gt": n_nodes - k},
+            "$and":[
+                {"$or": [{"accept_in_links": True}, {"accept_in_links":{"$exists": False} } ] },
+                {"$or":[]}
+            ]
+        }
 
-    n_nodes = len(nodes)
+   # n_nodes = len(nodes)
     combination_of_nodes = list(itertools.combinations(nodes, n_nodes - k))
 
-    query = {"_id": {"$ne": _id}, "count": {"$gt": n_nodes - k}, "$or": []}
+
     for comb in combination_of_nodes:
-        query["$or"].append({"nodes": {"$all": list(comb)}})
-    #print(query)
-    start = time.time()
+        query["$and"][1]["$or"].append({"nodes": {"$all": list(comb)}})
+
+    # start = time.time()
 
     cliques_cursor = db[collection].find(query)
 
-    end = time.time()
-    print('for one query', end - start)
+    # end = time.time()
+    # print('for one query', end - start)
 
     # cliques = [c for c in cliques_cursor]
     return cliques_cursor
@@ -51,12 +71,12 @@ def delete(ids):
         ids = map(ObjectId, ids)
         query = {"_id": {"$in": ids}}
         print 'deleting cliques'
-    except:
+    except InvalidId:
         query = {"com_id": {"$in": ids}}
         print ' deleting communities'
 
     print 'deleted', db[collection].delete_many(query).deleted_count
-    print 'request to delete', len(ids)
+    # print 'request to delete', len(ids)
     print '**********************************************************'
     file = open('deleted_ids.txt', 'a')
 
@@ -64,8 +84,9 @@ def delete(ids):
     print 'cliques retrieved with the id just deleted =', len(clqs)
     if len(clqs) > 0:
         print 'pdpdpd mongo shit'
-    for id in ids :
-        file.write(str(id)+',')
+    ids_to_write = map(str, ids)
+    string_to_write = ",".join(ids_to_write)
+    file.write(string_to_write)
     file.close
 
 def insert(comms):
@@ -107,10 +128,14 @@ def get_communities(comm_ids):
 def __converter__(com):
     # type:(Community)-> dict
     doc = com.__dict__
-    doc['users'] = list(doc['users'])
+    try:
+        doc['nodes'] = list(doc['users'])
+    except KeyError:
+        print doc
     doc['cliques'] = list(doc['cliques'])
     doc['count'] = len(doc['users'])
     del doc['weighted_profile']
     # del doc['interests_data']
     del doc['profile']
+    del doc['users']
     return doc

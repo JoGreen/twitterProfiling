@@ -11,7 +11,7 @@ max_depth = 2
 # two times the same function one create graph where nodes are id, the other one use clique or community objects as vertices
 def neighbour_graph_with_id(clq, visited, lev=1):
     # type:(Clique, set([str]), int)->(nx.DiGraph, set([str]) )
-
+    print 'level',lev,': building_graph ...'
     neighb2_and_cohesion = clq.get_neighbours(k=1) # return a list of dict with clique and cohesion fields
     if neighb2_and_cohesion is None:
         neighb2_and_cohesion= []
@@ -20,7 +20,7 @@ def neighbour_graph_with_id(clq, visited, lev=1):
     # print [(e['cohesion'], e['clique'].get_id() ) for e in n2]
 
     H = nx.DiGraph()
-    print 'level', lev
+
 
     if lev < max_depth :
         neighbours = [(n['clique'], visited, lev + 1) for n in neighb2_and_cohesion
@@ -44,6 +44,7 @@ def neighbour_graph_with_id(clq, visited, lev=1):
              for n in neighb2_and_cohesion] #used because it presents also nodes already expanded
 
     G = nx.DiGraph()
+    G.add_node(clq.get_id() ) # if edges is empty prevent to have a 0 nodes graph
     G.add_weighted_edges_from(edges)
     G = nx.compose(G, H)
     if lev is 1:

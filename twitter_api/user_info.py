@@ -27,7 +27,10 @@ class UserInfo:
 
     def get_retweets(self, user_id):
         #status = self.api.rate_limit_status()
-        retweets = self.api.user_timeline(user_id, None, None, 200)
-        print(len(retweets) )
+        retweets = self.api.user_timeline(user_id, None, None, 1)
+        map(show, retweets)
+
+def show(doc):
+    print doc
 
 #UserInfo().get_retweets("30524827")

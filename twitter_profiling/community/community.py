@@ -1,5 +1,7 @@
 from twitter_profiling.clique_profiling.clique import Clique
 import sys, hashlib
+from bson.objectid import ObjectId
+from bson.errors import InvalidId
 
 graph_cohesion_threeshold = 1.2
 vector_cohesion_threeshold = 0.018  # 0.008
@@ -7,22 +9,32 @@ vector_cohesion_threeshold = 0.018  # 0.008
 
 class Community(Clique):
 
-    def __init__(self, nodes, id1, id2, **kwargs):
+    def __init__(self, users, id1, id2, **kwargs):
         # type:(list[str], str, str)->None
         try:
-            if not kwargs.has_key('cliques'):
-                id1 = str(id1)
-                id2 = str(id2)
+            # if not kwargs.has_key('cliques'):
+            id1 = str(id1)
+            id2 = str(id2)
         except Exception:
             print 'wrong input type initializing Community instance'
             sys.exit(1)
-        self.com_id = kwargs.get('com_id', hashlib.md5(id1+id2).hexdigest() )
-        nodes = kwargs.get('users', nodes)
-        self.cliques = set(kwargs.get('cliques', [id1, id2]) )
+        self.com_id = kwargs.get('com_id', hashlib.md5(str(id1)+str(id2) ).hexdigest() )
+        nodes = kwargs.get('nodes', users)
+        self.cliques = kwargs.get('cliques', [id1, id2])
+        try: # to be sure to have right data
+            self.cliques = map(ObjectId, self.cliques)
+            self.cliques = map(str, self.cliques)
+            self.cliques = set(self.cliques)
+        except InvalidId:
+            print 'dirty data inside cliques field in community', self.com_id
+            sys.exit(1)
+
         super(Community, self).__init__(nodes, list(self.cliques).pop() ) #random id
         self.clique = None
 
         self.check_acceptance()
+
+
 
     def __eq__(self, other):
         if isinstance(other, Community):
@@ -49,15 +61,21 @@ class Community(Clique):
         if not(isinstance(obj, Community) or isinstance(obj, Clique)):
             print 'input for community fusion has to be a clique or community, but it is not'
             sys.exit(1)
-        if isinstance(obj, Clique):
+        if isinstance(obj, Clique) and not isinstance(obj, Community):
             self.__fusion_with_clique(obj)
-        if isinstance(obj, Community):
+        if isinstance(obj, Community) and isinstance(obj, Clique):
             self.__fusion_with_community(obj)
         # return c
 
     def __fusion_with_clique(self, clq):
         # type: (Community, Clique)->None
         self.users = self.users.union(set(clq.users) )
+        try: #security check
+            ObjectId(clq.get_id() )
+        except InvalidId:
+            print 'fusion wit clique: need an objectId like but it s not'
+            print clq.get_id()
+            sys.exit(1)
         self.cliques.add(clq.get_id() )
         self.check_acceptance()
 
@@ -65,6 +83,12 @@ class Community(Clique):
     def __fusion_with_community(self, com):
         # type: (Community, Community)->None
         self.users = self.users.union(set(com.users))
+        try:
+            map(ObjectId, com.cliques)
+        except InvalidId: # security check
+            print 'fusion wit community: need an objectId vector like but it s not'
+            print com.get_id()
+            sys.exit(1)
         self.cliques = self.cliques.union(set(com.cliques) )
         self.check_acceptance()
 

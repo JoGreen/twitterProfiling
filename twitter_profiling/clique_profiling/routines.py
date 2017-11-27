@@ -9,7 +9,7 @@ from twitter_profiling.clique_profiling.clique import Clique
 from twitter_profiling.clique_profiling.clique_graph import neighbour_graph, neighbour_graph_with_id
 from twitter_profiling.clique_profiling.utility import constructor
 from twitter_profiling.community.community import Community
-from twitter_profiling.community.dao.community_dao import delete, insert, get_communities_with_specific_cliques
+from twitter_profiling.community.dao.community_dao import delete, insert, get_communities_with_specific_cliques, get_communities
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 
@@ -59,6 +59,7 @@ def find_attractor(G, pagerank_with_node_weight=True):  # node with max gravity
 def aggregation_step(clq, visited):
     # type:(Clique, set([str]))->(nx.DiGraph, set([str]) )
     comms = {}
+    to_del = []
     G, expanded = neighbour_graph_with_id(clq, visited)
     print 'expanded cliques', len(expanded)
     print 'initial number of nodes in G', len(G.nodes)
@@ -66,17 +67,20 @@ def aggregation_step(clq, visited):
     while len(list(nx.weakly_connected_components(G))) < len(G.nodes):
         attractors = find_attractor(G)
         black_hole, pagerank = attractors[0]
-        new_community = aggregate_nodes(G, black_hole, comms)
+        new_community, comm_to_delete = aggregate_nodes(G, black_hole, comms)
+
+        if not comm_to_delete == None:
+            to_del.append(comm_to_delete)
         if not new_community == None:
             comms[new_community.get_id()] = new_community
 
     #print 'number of communities discovered at this step is', len(comms.keys() )
     print 'G nodes are', len(G.nodes)
     print len(comms.values() ), 'communities in this aggregation step'
-    __update_communities(comms)
+    deleted = __update_db(comms, to_del)
     print '# # # # # # # #'
     print
-    return G, expanded.union(visited)
+    return G, expanded.union(visited), deleted
     # if nx.number_connected_components() is G.number_of_nodes():
     #   return com_map.values()
 
@@ -84,13 +88,16 @@ def aggregation_step(clq, visited):
 # return a graph with new nodes but old weights on edges
 def aggregate_nodes(G, black_hole, comms):
     # type:(nx.DiGraph, str, dict)->(nx.DiGraph, Community)
+    print 'aggregation  nodes'
     edges = list(G.in_edges([black_hole], data=True))
     edges.sort(key=__take_weight)
     # edges contains at least on edge because this method is called only if graph has at least one edge.
-    src, dst, weight = edges.pop()  # dst = black_hole
+    try:
+        src, dst, weight = edges.pop()  # dst = black_hole
+    except ValueError:
+        print 'pdpdpdp'
 
-
-    community, to_delete = __fusion_4id_graph(comms, src, dst)
+    community, to_delete, comm_to_delete = __fusion_4id_graph(comms, src, dst)
     if community == None and not to_delete == None:
         G.remove_node(to_delete)
     else: __update_graph(G, src, dst, community)
@@ -102,7 +109,7 @@ def aggregate_nodes(G, black_hole, comms):
     #     community = __fusion_4id_graph(comms, src, community)
     #     __update_graph(G, src, dst, community)
 
-    return community
+    return community, comm_to_delete
 
 
 def __update_graph(G, src, dst, community):
@@ -110,12 +117,22 @@ def __update_graph(G, src, dst, community):
     nodes2remove = [src, dst]
     edges = [(s, community.get_id(), data['weight'])
              for s, d, data in G.in_edges([src, dst], data=True)
-             if not (s == src or s == dst)]
+             if (s != src and s != dst)]
     G.remove_nodes_from(nodes2remove)
     G.add_node(community.get_id() )
     if community.accept_in_links:
         G.add_weighted_edges_from(edges)
-
+        # safeness block --useless
+        error_found = False
+        nodes2remove = filter(lambda x: x != community.get_id(), nodes2remove )
+        try:
+            prev_num = G.number_of_nodes()
+            G.remove_nodes_from(nodes2remove)
+            if G.number_of_nodes() < prev_num : error_found = True
+        except nx.NetworkXException:
+            pass
+        if error_found:
+            print 'error fuckoff !!!'
 
 
 
@@ -138,15 +155,17 @@ def __fusion(src, dst):
 
     return community
 
-def __update_communities(comms):
-    # type:(dict)->None
+def __update_db(comms, comms_to_delete = []):
+    # type:(dict)->set(str)
     # delete all cliques  inside each com
     # add all coms
     clqs = map(__find_clqs_involved, comms.values() )
     clqs = itertools.chain(*clqs)
     delete(clqs)
+    delete(comms_to_delete)
     delete(comms.keys() )
     insert(comms.values() )
+    return set(clqs).union(comms_to_delete)
 
 
 
@@ -205,12 +224,16 @@ def __fusion_4id_graph(communities, src, dst):
     # type:(dict, str, str)-> (Community, object)
     # communities is a dict, its values have type Community
     clq2search = []
+    comms_to_load = []
+    comm_to_delete = None
+    clq_to_delete = None
     try:
         ObjectId(src)
         is_src_comm = False
         clq2search.append(src)
     except InvalidId:
         is_src_comm = True
+        comms_to_load.append(src)
 
     try:
         ObjectId(dst)
@@ -218,69 +241,85 @@ def __fusion_4id_graph(communities, src, dst):
         clq2search.append(dst)
     except InvalidId:
         is_dst_comm = True
+        comms_to_load.append(dst)
 
-    cliques = []
+    __load(comms_to_load, communities)
+
+    retrieved_cliques = []
     if len(clq2search) > 0:
         clqs = clique_dao.get_cliques(clq2search)
-        for c in clqs:
-            cliques.append(Clique(c['nodes'], c['_id']))
+        retrieved_cliques = map(constructor, clqs)
         clqs.close()
 
-    # fusion between cliques
-    if (not is_src_comm) and (not is_dst_comm):
-        try:
-            users = set(cliques[0].users).union(set(cliques[1].users))
-            community = Community(users, src, dst)
-        except IndexError:
-            print 'expected 2 cliques found at most one--> same bug depicted above.'
-            try:
-                cliques[0]
-                to_delete = [x for x in [src, dst] if not x == cliques[0].get_id() ]
-                to_delete = to_delete[0]
-            except IndexError: to_delete = src
-            return None, to_delete
+
+
+    if len(clq2search) == len(retrieved_cliques):
+        # fusion between cliques
+        if (not is_src_comm) and (not is_dst_comm):
+            return fusion_between_cliques(communities, src, dst, retrieved_cliques)
+        #fusion com -clq
+        if (not is_src_comm and is_dst_comm) or (is_src_comm and not is_dst_comm):
+            return fusion_between_com_clq(communities, src, dst, retrieved_cliques)
+        # fusion between communities
+        if is_src_comm and is_dst_comm:
+            return fusion_between_comms(communities, src, dst)
 
     else:
+        print 'fusion impossible---error-> it should be a solved bug'
 
-        try: # fusion between community and clique
-            communities[src].fusion(cliques[0] )
-            community = communities[src]
-        except Exception:
-            try: # fusion between community and clique
-                communities[dst].fusion(cliques[0] )
-                community = communities[dst]
-            except Exception:
-                try: # fusion between communities
-                    communities[dst].fusion(communities[src])
-                    delete([src])
-                    del communities[src]
-                    community = communities[dst]
-                except Exception as e:
-                    # this case could happen resuming computation after a stop..all communities are not loaded in memory so ..you need to load them
-                    if is_dst_comm and is_src_comm:
-                        comms = get_communities_with_specific_cliques([src, dst])
-                        comms = map(constructor, comms)
-                        if len(comms) > 2:
-                            print '2 communities ids to retrieve -> more than 2 communities returned'
-                            sys.exit(1)
-                        try:
-                            if not communities.has_key(comms[0]): communities[comms[0].get_id()] = comms[0]
-                        except IndexError: pass
+        comms_retrieved = list(get_communities_with_specific_cliques([src, dst]))
+        if len(comms_retrieved) > 0:
+            print 'found one or both communities in the db .. so no fusion at this step..there is a clique you should not consider'
+        else:
+            print 'error cause: gggrrrrr no community in the db contains that clique'
+            # why thos problem again ? deleted all useless cliques in main before starting computation
+            #
+            # sys.exit(1)
+        community = None
+        if is_src_comm == False: clq_to_delete= src
+        if is_dst_comm == False: clq_to_delete= dst
+        return community, clq_to_delete, comm_to_delete
 
-                        try:
-                            if not communities.has_key(comms[1]): communities[comms[1].get_id()] = comms[0]
-                        except IndexError: pass
 
-                        print 'communities dict updated'
-                        return __fusion_4id_graph(communities, src, dst)
-                    else:
-                        print 'fusion impossible---error-> usually it search for a clique already deleted but at the same time it has loaded it in the graph..it s a bug i don t realize how to prevent'
-                        print len(cliques), 'cliques retrieved'
-                        comms_retrieved = list(get_communities_with_specific_cliques([src, dst]))
-                        if len(comms_retrieved) > 0:
-                            print 'found one or both communities in the db .. so no fusion at this step..there is a clique you should not consider'
-                            if is_src_comm == False: return None, src
-                            if is_dst_comm == False: return None, dst
-                        else:
-                            sys.exit(1)
-    return community, None
+
+
+# when retrieving a community as neighbour..not all communities are loaded in memory so ..you need to load them
+def __load(ids, communities):
+    # type:(list[str], dict)->None
+    if len(ids) > 0 :
+        try:
+            [communities[id] for id in ids]
+        except KeyError:
+            print 'loading communities from db ...'
+            comms = get_communities(ids)
+            for c in comms:
+                com = constructor(c)
+                communities[com.get_id()] = com
+
+def fusion_between_cliques(communities, src, dst, cliques):
+    comm_to_delete = None
+    clq_to_delete = None
+    users = set(cliques[0].users).union(set(cliques[1].users))
+    community = Community(users, src, dst)
+    return community, clq_to_delete, comm_to_delete
+
+
+def fusion_between_com_clq(communities, src, dst, cliques):
+    try:  # fusion between community and clique
+        communities[src].fusion(cliques[0])
+        community = communities[src]
+        return community, None, None
+    except Exception:
+        # try:  # fusion between community and clique
+        communities[dst].fusion(cliques[0])
+        community = communities[dst]
+        return community, None, None
+
+
+def fusion_between_comms(communities, src, dst):
+    clq_to_delete = None
+    communities[dst].fusion(communities[src])
+    del communities[src]
+    community = communities[dst]
+    comm_to_delete = src
+    return community, clq_to_delete, comm_to_delete

@@ -1,7 +1,7 @@
 from twitter_clique import clique_dao
 
 # from clique_profiling.clique import Clique
-from clique_profiling.utility import constructor
+from clique_profiling.utility import constructor, destroy_useless_clique
 # from twitter_profiling.clique_profiling.clique_graph import neighbour_graph
 from twitter_profiling.clique_profiling.routines import aggregation_step
 import matplotlib.pyplot as plt, itertools
@@ -76,44 +76,74 @@ def compute_plot_clique_cohesion():
 ###########################################
 
 def inizializing(restart):
-    # type:(bool)->set([str])
+    # type:(bool)->(set([str]), set([str]) )
     try:
         if restart == False:
             f_visited = open("visited.txt", "r")
-            data = f_visited.read()
+            data_v = f_visited.read()
             f_visited.close()
-            if data == '': raise IOError
-            visited = data.split(',')
-            visited.pop() #delete last elem-> it s an empty string
+            if data_v == '': raise IOError
+            visited = data_v.split(',')
+            # visited.pop() #delete last elem-> it s an empty string
+
+            f_deleted = open("deleted_ids.txt", "r")
+            data_d = f_deleted.read()
+            f_deleted.close()
+            if data_d == '': raise IOError
+            deleted = data_d.split(',')
+            # deleted.pop()  # delete last elem-> it s an empty string
+
             print 'initializing phase done.'
             print len(visited), 'visited ids'
-            return set(visited)
+            return set(visited), set(deleted)
+        else:
+            f_not_computed = open('not_computed.txt', 'w')
+            f_not_computed.close()
+            f_deleted = open('deleted_ids.txt', 'w')
+            f_deleted.close()
     except IOError :
-        print 'visited.txt file not exists or it is empty. computation is starting from scratch'
-        file = open('deleted_ids.txt', 'w')
-        file.close()
-        return set()
+        destroy_useless_clique()
+        print 'at least one of visited.txt file or deleted_ids.txt not exists or it is empty. computation is starting from scratch'
+        f_deleted = open('deleted_ids.txt', 'w')
+        f_deleted.close()
+        f_not_computed = open('not_computed.txt', 'w')
+        f_not_computed.close()
+        return set(), set()
+
+def update_visited_file(visited):
+    visited_file = open('visited.txt', 'w')
+    string_to_write = ",".join(visited)
+    visited_file.write(string_to_write)
+    visited_file.close()
+
+
+
+
 
 minimum_num_of_interests = 3
 def step(restart = False):
-    visited = inizializing(restart)
+    visited, deleted = inizializing(restart)
     # cliques = clique_dao.get_limit_maximal_cliques_on_valid_users(10)
     cliques = clique_dao.get_maximal_cliques()
 
     for index, c in enumerate(cliques):
-        print 'step n.', index
-        clq = constructor(c, delete_if_useless=True) # return a clique or a community # Clique(c['nodes'], c['_id'])
+        clq = constructor(c) # return a clique or a community # Clique(c['nodes'], c['_id'])
 
-        if len(clq.get_profile() ) > minimum_num_of_interests and \
-                clq.enough_cohesion() and not clq.get_id() in visited:
+        if not clq.get_id() in visited and not clq.get_id() in deleted and \
+                len(clq.get_profile() ) > minimum_num_of_interests and \
+                clq.enough_cohesion():
 
-            G, visited = aggregation_step(clq, visited)
+            print 'step n.', index
+            G, visited, new_deleted = aggregation_step(clq, visited)
+            deleted.union(new_deleted)
             print 'visited', len(visited), 'nodes'
-            #print 'new step'
-        visited_file = open('visited.txt', 'w')
-        for id in visited:
-            visited_file.write(str(id)+',')
-        visited_file.close()
+            update_visited_file(visited)
+        else:
+            if len(clq.get_profile() ) <= minimum_num_of_interests or not clq.enough_cohesion():
+                f_not_computed = open('not_computed.txt', 'a')
+                f_not_computed.write(clq.get_id() + ',')
+                f_not_computed.close()
+
 
     print 'the end.'
     cliques.close()

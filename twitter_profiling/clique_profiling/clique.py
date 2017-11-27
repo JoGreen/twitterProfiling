@@ -16,6 +16,7 @@ from twitter_profiling.profiling_operators.cohesion.set_cohesion import profiles
 from twitter_profiling.profiling_operators.cohesion.vector_cohesion import cosine_cohesion_distance
 from twitter_profiling.user_profiling.profile_dao import ProfileDao
 from twitter_profiling.clique_profiling.utility import constructor
+from bson.errors import InvalidId
 
 class Clique(object):
 
@@ -33,9 +34,12 @@ class Clique(object):
             except TypeError:
                 print('wrong type params to create Clique instance')
                 sys.exit(1)
+            except InvalidId:
+                print "not a valid ObjectId:", id
+                sys.exit(1)
             self.knowledge_graph = None
             self.profile = kwargs.get('profile', None)
-            self.weighted_profile = kwargs.get('weighted_profile', {} )
+            self.weighted_profile = kwargs.get('weighted_profile', {})
             self.users = users
             self.clique = id
 
@@ -89,9 +93,8 @@ class Clique(object):
             cliques =[]
             if cohesion_type is 'vectors':
                 # cliques = pool.map(get_clique_with_minimum_vectors_cohesion, closers)
-                for c in closers:
-                    if len(self.get_profile()) > 3:
-                        cliques.append(get_clique_with_minimum_vectors_cohesion(c) )
+                if len(self.get_profile()) > minimum_num_of_interests:
+                    cliques = map(get_clique_with_minimum_vectors_cohesion_and_interests, closers)
             else:pass
                 #cliques = pool.map(get_clique_with_minimum_graph_cohesion, closers)
             #pool.close()
@@ -101,7 +104,7 @@ class Clique(object):
 
 
     def compute_weighted_profile(self, with_profiles_vectors_scores= False):
-        # self.get_vectors_cohesion()
+        # type:(Clique, bool)->list
         raw_profiles = self.get_users_profiles()  # raw json from db
         # profiles_vector = []
         profiles_vector_score = []
@@ -109,10 +112,9 @@ class Clique(object):
         for raw_prof in raw_profiles:
             profile = self.__get_interests_from_profile(raw_prof)
             if profile is not None:
-                # profile = set(profile).intersection(set(self.get_profile() ) )
-                # profiles_vector.append(profile)
+
                 scores = []
-                if self.get_profile() == None: return 1.0
+                if self.get_profile() == None: return 1.0 # not sure it is correct to return 1 and if none is a rel case
                 for interest in self.get_profile():
                     try:
                         scores.append(raw_prof['info']['interests']['all'][interest]['score'])
@@ -120,9 +122,11 @@ class Clique(object):
                         scores.append(0)
                 profiles_vector_score.append(scores)
         clique_weights = [np.mean(values) for values in np.array(profiles_vector_score).T]
+
         for interest in self.get_profile():
             index = self.get_profile().index(interest)
             self.weighted_profile[interest] = clique_weights[index]
+
         if with_profiles_vectors_scores is True:
             return profiles_vector_score
 
@@ -377,7 +381,7 @@ class Clique(object):
 ###################################################################################
 
 
-
+minimum_num_of_interests = 3
 
 graph_cohesion_threeshold = 1.2
 vector_cohesion_threeshold = 0.018 # prima 0.008
@@ -388,10 +392,10 @@ def get_clique_with_minimum_graph_cohesion(clique):
     if cohesion < graph_cohesion_threeshold:
         return {'clique':clique, 'cohesion': cohesion}
 
-def get_clique_with_minimum_vectors_cohesion(clique):
+def get_clique_with_minimum_vectors_cohesion_and_interests(clique):
     # type:(Clique)->Clique
     cohesion = clique.get_vectors_cohesion()
-    if cohesion < vector_cohesion_threeshold:
+    if cohesion < vector_cohesion_threeshold and len(clique.get_profile() ) > minimum_num_of_interests:
         return {'clique':clique, 'cohesion': cohesion}
 
 def get_neighbours(clique):

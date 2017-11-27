@@ -95,9 +95,10 @@ def get_cliques(ids):
         oids = map(ObjectId ,ids)
     except InvalidId:
         print 'not valid ids passed to get_cliques in clique_dao'
-        oids = ids
+        # oids = ids
+        return []
     except Exception:
-        print 'generic error during conversion to ObjectID'
+        print 'generic error difficult to explain'
         oids = ids
     db = DbInstance(27017, 'twitter').getDbInstance()
     cliques = db[collection].find({'_id': {'$in': oids}})
