@@ -4,7 +4,7 @@ from twitter_clique import clique_dao
 def constructor(doc, delete_if_useless= False):
     # type:(dict)->object
     try:
-        print doc['com_id']
+        doc['com_id']
         return __constr_comm(doc)
     except KeyError :
         return __constr_clq(doc, delete_if_useless= delete_if_useless)

@@ -22,6 +22,8 @@ class Clique(object):
 
    # user_set_profiles ={}
     interests_data = {}
+    minimum_num_of_interests = 5
+    profile_dao = ProfileDao()
 
     def __init__(self, users, id, delete_if_useless= False, **kwargs):
         # type: (list, str) -> None
@@ -58,11 +60,13 @@ class Clique(object):
 
     # search if a profile already exists ow compute and persist it for future usage
     # return a profile
-    def get_profile(self, force_recompute= False):
+    def get_profile(self, force_recompute= False, k_intersection=1):
         # type:(Clique, bool)->list[str]
         if self.profile is None or force_recompute == True:
-            self.__compute_profile()
+            self.__linear_compute_profile(k_intersection)
         return self.profile
+
+
 
     def is_a_clique(self):
         clique_status = check_clique.exist(self.users)
@@ -72,9 +76,9 @@ class Clique(object):
         print('not existing links:', len(clique_status['wrong_links']))
         return clique_status['exist_all']
 
-    def get_weighted_profile(self):
+    def get_weighted_profile(self, k_intersection= 1):
         if not len(self.weighted_profile.values() ) > 0:
-            self.compute_weighted_profile()
+            self.compute_weighted_profile(k_intersection= k_intersection)
         return self.weighted_profile
 
     def get_the_closers(self, k=1):  # move to Clique class ?
@@ -93,7 +97,7 @@ class Clique(object):
             cliques =[]
             if cohesion_type is 'vectors':
                 # cliques = pool.map(get_clique_with_minimum_vectors_cohesion, closers)
-                if len(self.get_profile()) > minimum_num_of_interests:
+                if len(self.get_profile()) > self.minimum_num_of_interests:
                     cliques = map(get_clique_with_minimum_vectors_cohesion_and_interests, closers)
             else:pass
                 #cliques = pool.map(get_clique_with_minimum_graph_cohesion, closers)
@@ -103,12 +107,12 @@ class Clique(object):
 
 
 
-    def compute_weighted_profile(self, with_profiles_vectors_scores= False):
+    def compute_weighted_profile(self, with_profiles_vectors_scores= False, k_intersection= 1):
         # type:(Clique, bool)->list
         raw_profiles = self.get_users_profiles()  # raw json from db
         # profiles_vector = []
         profiles_vector_score = []
-        self.get_profile(force_recompute=True)
+        self.get_profile(force_recompute=True, k_intersection= k_intersection)
         for raw_prof in raw_profiles:
             profile = self.__get_interests_from_profile(raw_prof)
             if profile is not None:
@@ -131,24 +135,27 @@ class Clique(object):
             return profiles_vector_score
 
 
-    def __compute_profile(self):
+    def __linear_compute_profile(self, k_intersection= 1):
+        profiles = self.get_users_profiles()
+        # print(len(profiles), 'number of profiles retrieved')
+        interests = map(self.__get_interests_from_profile, profiles)
+        users_interests = filter(lambda x: x != None, interests)
+        self.profile = intersection.minus_k_intersection_linear(users_interests, k_intersection)
+
+
+
+
+    def __compute_profile(self, k_intersection= 1):
         profiles = self.get_users_profiles()  # return a Pymongo cursor
         # print(profiles.count(), 'number of profiles retrieved')
         print(len(profiles), 'number of profiles retrieved')
-
         users_interests = []
-
-        for p in profiles:
-            self.__set_interest_data(p)
-            interests = self.__get_interests_from_profile(p)
-            if interests is not None:
-                users_interests.append(interests)
-
+        interests = map(self.__get_interests_from_profile, profiles)
+        users_interests = filter(lambda x: x != None, interests)
         # self.profile = intersection.rawIntersection(users_interests)
         self.profile = list(
-            intersection.minus_k_intesection(users_interests, 1))  # add a parameter to overwrite default k = 1
-        # self.__save_profile()
-        # self.__print_profile_interests()
+            intersection.minus_k_intersection(users_interests, k_intersection))  # add a parameter to overwrite default k = 1
+
 
 
     def __compute_knowledge_graph_from_set_profiles(self):
@@ -248,10 +255,11 @@ class Clique(object):
 
     def get_users_profiles(self):
         #type:(Clique)->list
-        profiles_cursor = ProfileDao().getSomeProfiles(list(self.users))  # return a Pymongo cursor
-        profiles = []
-        for p in profiles_cursor:
-            profiles.append(p)
+        profiles_cursor = self.profile_dao.getSomeProfiles(list(self.users))  # return a Pymongo cursor
+        profiles = list(profiles_cursor)
+        # profiles = []
+        # for p in profiles_cursor:
+        #     profiles.append(p)
             #print p
         return profiles #list
 
@@ -381,7 +389,7 @@ class Clique(object):
 ###################################################################################
 
 
-minimum_num_of_interests = 3
+#minimum_num_of_interests = 3
 
 graph_cohesion_threeshold = 1.2
 vector_cohesion_threeshold = 0.018 # prima 0.008
@@ -395,8 +403,10 @@ def get_clique_with_minimum_graph_cohesion(clique):
 def get_clique_with_minimum_vectors_cohesion_and_interests(clique):
     # type:(Clique)->Clique
     cohesion = clique.get_vectors_cohesion()
-    if cohesion < vector_cohesion_threeshold and len(clique.get_profile() ) > minimum_num_of_interests:
-        return {'clique':clique, 'cohesion': cohesion}
+    if cohesion < vector_cohesion_threeshold and len(clique.get_profile() ) > clique.minimum_num_of_interests:
+        user_count = {}
+        user_count[clique.get_id()] = len(clique.users)
+        return {'clique':clique, 'cohesion': cohesion, 'user_count': user_count}
 
 def get_neighbours(clique):
     # type:(Clique)->list[Clique]

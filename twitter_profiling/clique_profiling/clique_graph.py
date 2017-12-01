@@ -1,21 +1,25 @@
 from clique import Clique
 import networkx as nx, operator
 # import matplotlib.pyplot as plt
-from multiprocessing import Pool
-from pyspark.sql import SparkSession
+from multiprocessing import Pool, freeze_support
+#import itertools
+#from pyspark.sql import SparkSession
 # from pyspark.sql.types import StructType, FloatType, StringType, StructField
-from graphframes import graphframe as gf
+#from graphframes import graphframe as gf
 
-max_depth = 2
+max_depth = 2 #increase this value need to re-implement how pass the expanded_cliques variable
 
 # two times the same function one create graph where nodes are id, the other one use clique or community objects as vertices
 def neighbour_graph_with_id(clq, visited, lev=1):
     # type:(Clique, set([str]), int)->(nx.DiGraph, set([str]) )
-    print 'level',lev,': building_graph ...'
+    # print 'level',lev,': building_graph ...'
     neighb2_and_cohesion = clq.get_neighbours(k=1) # return a list of dict with clique and cohesion fields
     if neighb2_and_cohesion is None:
         neighb2_and_cohesion= []
 
+    map_num_nodes = {clq.get_id(): len(clq.users) }
+    for doc in neighb2_and_cohesion:
+        map_num_nodes.update(doc["user_count"])
     # n2 = sorted(neighb2_and_cohesion, key=operator.itemgetter('cohesion'))
     # print [(e['cohesion'], e['clique'].get_id() ) for e in n2]
 
@@ -33,7 +37,12 @@ def neighbour_graph_with_id(clq, visited, lev=1):
             # H = nx.compose_all(graphs)
 
             # for n in neighbours:
-            graphs = map(launcher, neighbours) # nx.compose(H, neighbour_graph(*n) )
+            graphs_and_nodes_count = map(launcher, neighbours) # nx.compose(H, neighbour_graph(*n) )
+            graphs = []
+            for t in graphs_and_nodes_count:
+                graphs.append(t[0])
+                map_num_nodes.update(t[1])
+
             if len(graphs) > 0:
                 H = nx.compose_all(graphs)
 
@@ -42,6 +51,7 @@ def neighbour_graph_with_id(clq, visited, lev=1):
     # at the moment they could have in edges also if check_acceptance return False, but if its cohesion don t gr
     edges = [(clq.get_id(), n['clique'].get_id(), clq.get_profile_vector_similarity_with(n['clique']) )
              for n in neighb2_and_cohesion] #used because it presents also nodes already expanded
+
 
     G = nx.DiGraph()
     G.add_node(clq.get_id() ) # if edges is empty prevent to have a 0 nodes graph
@@ -54,9 +64,10 @@ def neighbour_graph_with_id(clq, visited, lev=1):
         # delete_external_nodes(G)
         print
         print 'graph built.'
-        return G,  expanded_cliques # return a  graph and a list of clique ids
+        # return a  graph and a list of clique ids and a map with number of users for community
+        return G, expanded_cliques, map_num_nodes
 
-    return G
+    return G, map_num_nodes
 
 def neighbour_graph(clq, visited, lev=1):
     # type:(Clique, set([str]), int )->(nx.DiGraph, set([str]))
@@ -131,3 +142,10 @@ def delete_external_nodes(G):
 #     spark.stop()
 #     return results
 # valauta se la differenza tra graph cohesion e vector cohesion elimina cmq le due clique meno coese
+
+
+def get_edge_star(l):
+    return get_edge(*l)
+
+def get_edge(com1, com2):
+    return (com1.get_id(), com2['clique'].get_id(), com1.get_profile_vector_similarity_with(com2['clique']) )

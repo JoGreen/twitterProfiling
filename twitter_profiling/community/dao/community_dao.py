@@ -9,6 +9,8 @@ collection = 'comms'
 db_name = 'twitter'
 port = 27017
 
+threeshold_for_huge_community = 120
+
 def get_similar_community_on_nodes(_id, nodes, k=1):  # check if id needs casting to ObjIdMongo
     #type: (str, list[str], int)->Cursor
     db = DbInstance(port, db_name).getDbInstance()
@@ -19,7 +21,7 @@ def get_similar_community_on_nodes(_id, nodes, k=1):  # check if id needs castin
         n_nodes = len(nodes)
         query = {
             "_id": {"$ne": _id},
-            "count": {"$gt": n_nodes - k},
+            "count": {"$lt": threeshold_for_huge_community},# "count": {"$gt": n_nodes - k},
             "$and":[
                 {"$or": [{"accept_in_links": True}, {"accept_in_links":{"$exists": False} } ] },
                 {"$or":[]}
@@ -32,7 +34,7 @@ def get_similar_community_on_nodes(_id, nodes, k=1):  # check if id needs castin
         n_nodes = len(nodes)
         query = {
             "com_id": {"$ne": _id},
-            "count": {"$gt": n_nodes - k},
+            "count": {"$lt": threeshold_for_huge_community},#{"$gt": n_nodes - k},# "count": {"$lt": threeshold_for_huge_community - k}, #"count": {"$gt": n_nodes - k},
             "$and":[
                 {"$or": [{"accept_in_links": True}, {"accept_in_links":{"$exists": False} } ] },
                 {"$or":[]}
@@ -40,7 +42,7 @@ def get_similar_community_on_nodes(_id, nodes, k=1):  # check if id needs castin
         }
 
    # n_nodes = len(nodes)
-    combination_of_nodes = list(itertools.combinations(nodes, n_nodes - k))
+    combination_of_nodes = itertools.combinations(nodes, n_nodes - k)
 
 
     for comb in combination_of_nodes:
@@ -70,18 +72,19 @@ def delete(ids):
     try:
         ids = map(ObjectId, ids)
         query = {"_id": {"$in": ids}}
-        print 'deleting cliques'
+        #print 'deleting cliques'
     except InvalidId:
         query = {"com_id": {"$in": ids}}
-        print ' deleting communities'
+        #print ' deleting communities'
 
-    print 'deleted', db[collection].delete_many(query).deleted_count
+
+    db[collection].delete_many(query)
     # print 'request to delete', len(ids)
-    print '**********************************************************'
+    #print '**********************************************************'
     file = open('deleted_ids.txt', 'a')
 
     clqs = list(get_cliques(ids) )
-    print 'cliques retrieved with the id just deleted =', len(clqs)
+    #print 'cliques retrieved with the id just deleted =', len(clqs)
     if len(clqs) > 0:
         print 'pdpdpd mongo shit'
     ids_to_write = map(str, ids)

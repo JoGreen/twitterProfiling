@@ -19,8 +19,19 @@ def cosine_cohesion_distance(vectors):
 
 def __check_for_zero_vector(v):
     # type: (list[int])->list[float]
+    try:
+        list(v)
+    except TypeError: print v, type(v)
     if len(v) > 0:
-        sv = set(v)
+        sv = set(v) # use as et because i see if it s composed by only  0s
         if len(sv) == 1 and sv.pop() == 0:
             v[0] = v[0] + 0.00001
         return v
+
+
+
+
+#v1 = [1,2,3,4,5,6]
+#v2 = [1,7,8,6,66,2]
+
+#cosine_cohesion_distance([v1,v2])

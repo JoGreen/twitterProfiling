@@ -20,7 +20,8 @@ def vector_distance(vectors):
         a = list(vectors[0])
         b= list(vectors[1])
     except TypeError:
-        print 'vector smilarity needs array like inputs'
+        print 'vector distance needs array like inputs'
+        print vectors
         sys.exit(1)
     return cosine(a,b)
 
@@ -30,7 +31,7 @@ def vector_similarity(a,b):
         a = list(a)
         b= list(b)
     except TypeError:
-        print 'wrong type input vector distance function'
+        print 'wrong type input vector similarity function'
         sys.exit(1)
     matrix = [a,b]
     #matrix = np.array(matrix)

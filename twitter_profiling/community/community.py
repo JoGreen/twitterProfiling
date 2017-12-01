@@ -57,19 +57,18 @@ class Community(Clique):
     #     pass
 
     def fusion(self, obj):
-        # type: (Community, object)->None
+        # type: (Community, object)->bool
         if not(isinstance(obj, Community) or isinstance(obj, Clique)):
             print 'input for community fusion has to be a clique or community, but it is not'
             sys.exit(1)
         if isinstance(obj, Clique) and not isinstance(obj, Community):
-            self.__fusion_with_clique(obj)
+            return self.__fusion_with_clique(obj)
         if isinstance(obj, Community) and isinstance(obj, Clique):
-            self.__fusion_with_community(obj)
+            return self.__fusion_with_community(obj)
         # return c
 
     def __fusion_with_clique(self, clq):
         # type: (Community, Clique)->None
-        self.users = self.users.union(set(clq.users) )
         try: #security check
             ObjectId(clq.get_id() )
         except InvalidId:
@@ -77,20 +76,40 @@ class Community(Clique):
             print clq.get_id()
             sys.exit(1)
         self.cliques.add(clq.get_id() )
-        self.check_acceptance()
+        old_users = set(self.users)
+        self.users = self.users.union(set(clq.users))
+        if len(self.get_profile(force_recompute=True)) > self.minimum_num_of_interests:
+            self.check_acceptance()
+            return True
+        else:
+            print 'fusion not confirmed'
+            self.cliques.remove(clq.get_id())
+            self.users = old_users
+            return False
 
 
     def __fusion_with_community(self, com):
         # type: (Community, Community)->None
-        self.users = self.users.union(set(com.users))
+
         try:
             map(ObjectId, com.cliques)
         except InvalidId: # security check
-            print 'fusion wit community: need an objectId vector like but it s not'
+            print 'fusion with community: need an objectId vector like but it s not'
             print com.get_id()
             sys.exit(1)
+        old_clqs = set(self.cliques)
+        old_users = set(self.users)
         self.cliques = self.cliques.union(set(com.cliques) )
-        self.check_acceptance()
+        self.users = self.users.union(set(com.users))
+        if len(self.get_profile(force_recompute=True)) > self.minimum_num_of_interests:
+            self.check_acceptance()
+            return True
+        else:
+            print 'fusion not confirmed'
+            self.users = old_users
+            self.cliques = old_clqs
+            return False
+
 
 
 # d = {'cliques': ['5946ad97f810d5692252d7b0', '5946a906f810d569224c766c'],

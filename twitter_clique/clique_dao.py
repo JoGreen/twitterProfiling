@@ -94,9 +94,9 @@ def get_cliques(ids):
     try:
         oids = map(ObjectId ,ids)
     except InvalidId:
-        print 'not valid ids passed to get_cliques in clique_dao'
+        # print 'not valid ids passed to get_cliques in clique_dao'
         # oids = ids
-        return []
+        return [] #for compatibilty with community return []
     except Exception:
         print 'generic error difficult to explain'
         oids = ids
@@ -111,6 +111,11 @@ def create_dataset():
     cliques = list(clqs)
     clqs.close()
     db['comms'].insert_many(cliques)
+
+
+def ordered_data_set(dim):
+    # type:(int)->Cursor
+    pass
 
 # print get_maximal_cliques_on_valid_users().count()
 # clq = {

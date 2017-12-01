@@ -9,7 +9,8 @@ import matplotlib.pyplot as plt, itertools
 from multiprocessing import Pool
 import os, time, math, numpy as np
 from twitter_profiling.clique_clustering.density import dbscan_on_clique_neighbourhood
-
+from twitter_profiling.clique_profiling.clique import Clique
+from twitter_profiling.user_profiling.profile_dao import ProfileDao
 
 def cohesion(c):
     clique = constructor(c)#Clique(c['nodes'], str(c['_id']))
@@ -120,11 +121,14 @@ def update_visited_file(visited):
 
 
 
-minimum_num_of_interests = 3
+minimum_num_of_interests = Clique.minimum_num_of_interests
+
 def step(restart = False):
     visited, deleted = inizializing(restart)
     # cliques = clique_dao.get_limit_maximal_cliques_on_valid_users(10)
-    cliques = clique_dao.get_maximal_cliques()
+    cliques = clique_dao.get_maximal_cliques().skip(4000)
+
+    t_start = time.time()
 
     for index, c in enumerate(cliques):
         clq = constructor(c) # return a clique or a community # Clique(c['nodes'], c['_id'])
@@ -133,12 +137,19 @@ def step(restart = False):
                 len(clq.get_profile() ) > minimum_num_of_interests and \
                 clq.enough_cohesion():
 
+            t0= time.time()
             print 'step n.', index
             G, visited, new_deleted = aggregation_step(clq, visited)
             deleted.union(new_deleted)
-            print 'visited', len(visited), 'nodes'
+            #print 'visited', len(visited), 'nodes'
             update_visited_file(visited)
+            t1 = time.time()
+            log = 'step '+ str(index)+ ' in time: '+ str(t1-t0)+'\n'
+            time_log= open('time_log.txt', "a")
+            time_log.write(log)
+            time_log.close()
         else:
+            # print 'not computed'
             if len(clq.get_profile() ) <= minimum_num_of_interests or not clq.enough_cohesion():
                 f_not_computed = open('not_computed.txt', 'a')
                 f_not_computed.write(clq.get_id() + ',')
@@ -146,7 +157,12 @@ def step(restart = False):
 
 
     print 'the end.'
+    t_end = time.time()
+    time_log = open('time_log.txt', "a")
+    log = 'computation ended in '+ str(t_end-t_start)+'\n'
+    time_log.write(log)
+    time_log.close()
     cliques.close()
 
-
+#ProfileDao().get_all_useful_profiles()
 step()

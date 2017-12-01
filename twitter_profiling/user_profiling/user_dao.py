@@ -20,10 +20,17 @@ class UserDao:
         friends = []
         user_data = self.db[self.collection].find_one({'id': user_id}, {'_id': 0, 'friends': 1})
         if user_data is not None:
-            for f in user_data['friends']:
-                friends.append(f)
-
+            return user_data['friends']
         return friends
+
+    def get_friends_of(self, ids):
+        try:
+            ids=list(ids)
+        except TypeError:
+            print 'type error in get_friends_of'
+        friends_data = self.db[self.collection].find({"id":{"$in":ids}}, {'_id': 0, "id":1, 'friends': 1})
+        return friends_data
+
 
     def get_followers(self, user_id):
         pass
@@ -49,4 +56,4 @@ class UserDao:
         return users
 
 
-    # print(UserDao().get_friends('120639382') )
+#print(UserDao().get_friends('120639382') )

@@ -6,7 +6,7 @@ import sys
 
 from twitter_clique import clique_dao
 from twitter_profiling.clique_profiling.clique import Clique
-from twitter_profiling.clique_profiling.clique_graph import neighbour_graph, neighbour_graph_with_id
+from twitter_profiling.clique_profiling.clique_graph import neighbour_graph_with_id
 from twitter_profiling.clique_profiling.utility import constructor
 from twitter_profiling.community.community import Community
 from twitter_profiling.community.dao.community_dao import delete, insert, get_communities_with_specific_cliques, get_communities
@@ -25,7 +25,7 @@ from bson.errors import InvalidId
 #     print "Can not import Spark Modules", ex
 #     sys.exit(1)
 
-def find_attractor(G, pagerank_with_node_weight=True):  # node with max gravity
+def find_attractor(G, map_num_nodes, pagerank_with_node_weight=True):  # node with max gravity
     # type:(nx.DiGraph, bool)->(str, float)
     # strategies: -> pagerank -> undestand better weights on edges and on nodes what do they mean in term of result
     if pagerank_with_node_weight is False:
@@ -37,16 +37,25 @@ def find_attractor(G, pagerank_with_node_weight=True):  # node with max gravity
         print
         print authorities
 
-    else: # optimizable with matrix operation !!!!!!pandas
+    else: # optimizable with matrix operation ?!!!!!!pandas ?
         attraction_forces = {}
+        exp = 2
         for dst in G.nodes:
             neighbors = G.predecessors(dst)
             orbital_gravities = []
             for src in neighbors:
                 orbital_gravities.append(G.get_edge_data(src, dst)['weight'])
-            if len(orbital_gravities) == 0: orbital_gravities.append(0.)
+            if len(orbital_gravities) == 0:
+                orbital_gravities.append(0.)
+                num_exp = 0
+            else: num_exp = exp
+            denom_exp = exp-1
             mean = np.mean(orbital_gravities)
-            attraction_forces[dst] = mean
+            # maybe pow(map_num_nodes[dst], 2) -> think about
+            #####**********************************************************
+            # attraction_forces[dst] = pow(20 * mean, num_exp) * 1./pow(map_num_nodes[dst], denom_exp) # to avoid big attractor with low mean values eats everybody
+            attraction_forces[dst] = ( (10 * mean) ** num_exp) * 1. / (map_num_nodes[dst] ** denom_exp) # to avoid big attractor with low mean values eats everybody
+            #####**********************************************************
         try:
             mapping_gravity = nx.pagerank_numpy(G, personalization= attraction_forces)
         except np.linalg.LinAlgError:
@@ -60,26 +69,29 @@ def aggregation_step(clq, visited):
     # type:(Clique, set([str]))->(nx.DiGraph, set([str]) )
     comms = {}
     to_del = []
-    G, expanded = neighbour_graph_with_id(clq, visited)
+    G, expanded, map_num_nodes = neighbour_graph_with_id(clq, visited)
     print 'expanded cliques', len(expanded)
     print 'initial number of nodes in G', len(G.nodes)
 
     while len(list(nx.weakly_connected_components(G))) < len(G.nodes):
-        attractors = find_attractor(G)
+        attractors = find_attractor(G, map_num_nodes)
         black_hole, pagerank = attractors[0]
         new_community, comm_to_delete = aggregate_nodes(G, black_hole, comms)
-
+        #should update map_num_nodes for next iter
+        if new_community != None: # to prevent fail when fusion is aborted for cohesion reasons
+            map_num_nodes[new_community.get_id()] = len(new_community.users)
+        #***************************
         if not comm_to_delete == None:
             to_del.append(comm_to_delete)
         if not new_community == None:
             comms[new_community.get_id()] = new_community
 
     #print 'number of communities discovered at this step is', len(comms.keys() )
-    print 'G nodes are', len(G.nodes)
-    print len(comms.values() ), 'communities in this aggregation step'
+    print 'G final nodes are', len(G.nodes)
+    #print len(comms.values() ), 'communities in this aggregation step'
     deleted = __update_db(comms, to_del)
-    print '# # # # # # # #'
-    print
+    #print '# # # # # # # #'
+    #print
     return G, expanded.union(visited), deleted
     # if nx.number_connected_components() is G.number_of_nodes():
     #   return com_map.values()
@@ -88,7 +100,7 @@ def aggregation_step(clq, visited):
 # return a graph with new nodes but old weights on edges
 def aggregate_nodes(G, black_hole, comms):
     # type:(nx.DiGraph, str, dict)->(nx.DiGraph, Community)
-    print 'aggregation  nodes'
+    #print 'aggregation  nodes'
     edges = list(G.in_edges([black_hole], data=True))
     edges.sort(key=__take_weight)
     # edges contains at least on edge because this method is called only if graph has at least one edge.
@@ -97,10 +109,12 @@ def aggregate_nodes(G, black_hole, comms):
     except ValueError:
         print 'pdpdpdp'
 
-    community, to_delete, comm_to_delete = __fusion_4id_graph(comms, src, dst)
-    if community == None and not to_delete == None:
-        G.remove_node(to_delete)
-    else: __update_graph(G, src, dst, community)
+    community, clq_to_delete, comm_to_delete = __fusion_4id_graph(comms, src, dst, G)
+    if community == None and not clq_to_delete == None:
+        G.remove_node(clq_to_delete)
+    else:
+        if community != None:
+            __update_graph(G, src, dst, community)
 
     # comms[community.get_id()] = community
 
@@ -220,8 +234,8 @@ def __fusion_4id_graph_not_in_use(communities, src, dst):
 
 
 # this method has to be splitted in 4 !!! important to mantain code
-def __fusion_4id_graph(communities, src, dst):
-    # type:(dict, str, str)-> (Community, object)
+def __fusion_4id_graph(communities, src, dst, G):
+    # type:(dict, str, str, nx.DiGraph)-> (Community, object, object)
     # communities is a dict, its values have type Community
     clq2search = []
     comms_to_load = []
@@ -259,17 +273,18 @@ def __fusion_4id_graph(communities, src, dst):
             return fusion_between_cliques(communities, src, dst, retrieved_cliques)
         #fusion com -clq
         if (not is_src_comm and is_dst_comm) or (is_src_comm and not is_dst_comm):
-            return fusion_between_com_clq(communities, src, dst, retrieved_cliques)
+            return fusion_between_com_clq(communities, src, dst, retrieved_cliques, G)
         # fusion between communities
         if is_src_comm and is_dst_comm:
-            return fusion_between_comms(communities, src, dst)
+            return fusion_between_comms(communities, src, dst, G)
 
     else:
         print 'fusion impossible---error-> it should be a solved bug'
 
         comms_retrieved = list(get_communities_with_specific_cliques([src, dst]))
         if len(comms_retrieved) > 0:
-            print 'found one or both communities in the db .. so no fusion at this step..there is a clique you should not consider'
+            pass
+           # print 'found one or both communities in the db .. so no fusion at this step..there is a clique you should not consider'
         else:
             print 'error cause: gggrrrrr no community in the db contains that clique'
             # why thos problem again ? deleted all useless cliques in main before starting computation
@@ -290,7 +305,7 @@ def __load(ids, communities):
         try:
             [communities[id] for id in ids]
         except KeyError:
-            print 'loading communities from db ...'
+            #print 'loading communities from db ...'
             comms = get_communities(ids)
             for c in comms:
                 com = constructor(c)
@@ -304,22 +319,31 @@ def fusion_between_cliques(communities, src, dst, cliques):
     return community, clq_to_delete, comm_to_delete
 
 
-def fusion_between_com_clq(communities, src, dst, cliques):
+def fusion_between_com_clq(communities, src, dst, cliques, G):
     try:  # fusion between community and clique
-        communities[src].fusion(cliques[0])
-        community = communities[src]
-        return community, None, None
-    except Exception:
+        if communities[src].fusion(cliques[0]):
+            community = communities[src]
+            return community, None, None
+        else:
+            G.remove_node(src)
+            return None, None, None # low number of interests
+    except KeyError:
         # try:  # fusion between community and clique
-        communities[dst].fusion(cliques[0])
-        community = communities[dst]
-        return community, None, None
+        if communities[dst].fusion(cliques[0]):
+            community = communities[dst]
+            return community, None, None
+        else:
+            G.remove_node(dst)
+            return None, None, None
 
 
-def fusion_between_comms(communities, src, dst):
+def fusion_between_comms(communities, src, dst, G):
     clq_to_delete = None
-    communities[dst].fusion(communities[src])
-    del communities[src]
-    community = communities[dst]
-    comm_to_delete = src
-    return community, clq_to_delete, comm_to_delete
+    if communities[dst].fusion(communities[src]):
+        del communities[src]
+        community = communities[dst]
+        comm_to_delete = src
+        return community, clq_to_delete, comm_to_delete
+    else:
+        G.remove_node(dst) # dst is the black hole
+        return None, None, None
