@@ -119,14 +119,14 @@ def update_visited_file(visited):
 
 
 
-
-
+limit_dataset = 10000
+clique_dao.create_dataset(limit_dataset)
 minimum_num_of_interests = Clique.minimum_num_of_interests
 
 def step(restart = False):
     visited, deleted = inizializing(restart)
     # cliques = clique_dao.get_limit_maximal_cliques_on_valid_users(10)
-    cliques = clique_dao.get_maximal_cliques().skip(4000)
+    cliques = clique_dao.get_maximal_cliques()#.skip(5000)
 
     t_start = time.time()
 
@@ -159,7 +159,7 @@ def step(restart = False):
     print 'the end.'
     t_end = time.time()
     time_log = open('time_log.txt', "a")
-    log = 'computation ended in '+ str(t_end-t_start)+'\n'
+    log = 'computation ended in '+ str(t_end-t_start)+'\n'+'dataset of '+str(limit_dataset)
     time_log.write(log)
     time_log.close()
     cliques.close()

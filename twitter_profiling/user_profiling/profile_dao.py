@@ -21,8 +21,7 @@ class ProfileDao:
             some_profiles = []
             for u in someUsers:
                 some_profiles.append(self.profile_cache[u])
-                # if len(some_profiles)>1:
-                #     print 'olle'
+
         except KeyError:
         #else:
             some_profiles = self.db['user_infos'].find({"user":{"$in":someUsers} })

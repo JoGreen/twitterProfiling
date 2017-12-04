@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="92da4c22-23fe-4a7f-a6e3-acaba84586f0" name="Default" comment="manage resuming computation">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/twitter_test/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/twitter_test/detection_tests.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/twitter_test/retrieve_tweets.py" />
+    <list default="true" id="92da4c22-23fe-4a7f-a6e3-acaba84586f0" name="Default" comment="partial fixing of ghost removed clique">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twitter_api/user_info.py" afterPath="$PROJECT_DIR$/twitter_api/user_info.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twitter_clique/clique_dao.py" afterPath="$PROJECT_DIR$/twitter_clique/clique_dao.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twitter_profiling/clique_profiling/clique.py" afterPath="$PROJECT_DIR$/twitter_profiling/clique_profiling/clique.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twitter_profiling/clique_profiling/clique_graph.py" afterPath="$PROJECT_DIR$/twitter_profiling/clique_profiling/clique_graph.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twitter_mongodb/twitterdb_instance.py" afterPath="$PROJECT_DIR$/twitter_mongodb/twitterdb_instance.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twitter_profiling/clique_profiling/routines.py" afterPath="$PROJECT_DIR$/twitter_profiling/clique_profiling/routines.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twitter_profiling/clique_profiling/utility.py" afterPath="$PROJECT_DIR$/twitter_profiling/clique_profiling/utility.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twitter_profiling/community/community.py" afterPath="$PROJECT_DIR$/twitter_profiling/community/community.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twitter_profiling/community/dao/community_dao.py" afterPath="$PROJECT_DIR$/twitter_profiling/community/dao/community_dao.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twitter_profiling/main.py" afterPath="$PROJECT_DIR$/twitter_profiling/main.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twitter_profiling/user_profiling/profile_dao.py" afterPath="$PROJECT_DIR$/twitter_profiling/user_profiling/profile_dao.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -25,77 +19,90 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/twitter_profiling/main.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="155">
-              <caret line="129" column="27" lean-forward="false" selection-start-line="129" selection-start-column="27" selection-end-line="129" selection-end-column="27" />
-              <folding>
-                <element signature="e#0#37#0" expanded="true" />
-                <element signature="e#553#710#0" expanded="false" />
-                <element signature="e#744#1504#0" expanded="false" />
-                <element signature="e#1558#1868#0" expanded="false" />
-                <element signature="e#1936#2549#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="community_dao.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/twitter_profiling/community/dao/community_dao.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="188">
-              <caret line="87" column="43" lean-forward="false" selection-start-line="87" selection-start-column="43" selection-end-line="87" selection-end-column="43" />
-              <folding>
-                <element signature="e#0#57#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="routines.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/twitter_profiling/clique_profiling/routines.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="275" column="13" lean-forward="false" selection-start-line="275" selection-start-column="13" selection-end-line="275" selection-end-column="13" />
+            <state relative-caret-position="736">
+              <caret line="80" column="40" lean-forward="false" selection-start-line="80" selection-start-column="40" selection-end-line="80" selection-end-column="40" />
               <folding>
                 <element signature="e#0#16#0" expanded="true" />
-                <element signature="e#612#630#0" expanded="false" />
-                <element signature="e#1004#2309#0" expanded="false" />
-                <element signature="e#5341#5388#0" expanded="false" />
-                <element signature="e#5418#5792#0" expanded="false" />
-                <element signature="e#5844#6159#0" expanded="false" />
-                <element signature="e#6320#7792#0" expanded="false" />
-                <element signature="e#7531#7653#0" expanded="false" />
-                <element signature="e#10550#10754#0" expanded="false" />
-                <element signature="e#10821#11176#0" expanded="false" />
-                <element signature="e#11232#11433#0" expanded="false" />
+                <element signature="e#595#613#0" expanded="false" />
+                <element signature="e#1209#1521#0" expanded="false" />
+                <element signature="e#5223#5262#0" expanded="false" />
+                <element signature="e#6423#6470#0" expanded="false" />
+                <element signature="e#6500#6874#0" expanded="false" />
+                <element signature="e#7402#8874#0" expanded="false" />
+                <element signature="e#8613#8735#0" expanded="false" />
+                <element signature="e#8999#11127#0" expanded="false" />
+                <element signature="e#11680#11884#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="clique_graph.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/twitter_profiling/clique_profiling/clique_graph.py">
+      <file leaf-file-name="tweet_utility.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/twitter_testing/tweet_utility.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="13" column="25" lean-forward="false" selection-start-line="13" selection-start-column="25" selection-end-line="13" selection-end-column="25" />
-              <folding>
-                <element signature="e#2502#3643#0" expanded="false" />
-                <element signature="e#3767#5028#0" expanded="false" />
-                <element signature="e#3910#3934#0" expanded="false" />
-              </folding>
+            <state relative-caret-position="510">
+              <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="clique_dao.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="abc.py" pinned="false" current-in-tab="false">
+        <entry file="file:///usr/local/Cellar/python/2.7.13/Frameworks/Python.framework/Versions/2.7/lib/python2.7/abc.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2176">
+              <caret line="130" column="0" lean-forward="false" selection-start-line="130" selection-start-column="0" selection-end-line="130" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pydevd.py" pinned="false" current-in-tab="false">
+        <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="26537">
+              <caret line="1598" column="0" lean-forward="false" selection-start-line="1598" selection-start-column="0" selection-end-line="1598" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="clique_dao.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/twitter_clique/clique_dao.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="201">
-              <caret line="33" column="33" lean-forward="true" selection-start-line="33" selection-start-column="33" selection-end-line="33" selection-end-column="33" />
+            <state relative-caret-position="-987">
+              <caret line="36" column="38" lean-forward="true" selection-start-line="36" selection-start-column="38" selection-end-line="36" selection-end-column="38" />
               <folding>
-                <element signature="e#1968#2150#0" expanded="false" />
+                <element signature="e#0#57#0" expanded="true" />
+                <marker date="1512305876000" expanded="false" signature="3955:4159" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="community.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/twitter_profiling/community/community.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="935">
+              <caret line="58" column="8" lean-forward="false" selection-start-line="58" selection-start-column="8" selection-end-line="58" selection-end-column="8" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/twitter_profiling/main.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-3">
+              <caret line="121" column="21" lean-forward="false" selection-start-line="121" selection-start-column="21" selection-end-line="121" selection-end-column="21" />
+              <folding>
+                <element signature="e#681#838#0" expanded="false" />
+                <element signature="e#872#1632#0" expanded="false" />
+                <element signature="e#1686#1996#0" expanded="false" />
+                <element signature="e#2064#2677#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -104,73 +111,30 @@
       <file leaf-file-name="profile_dao.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/twitter_profiling/user_profiling/profile_dao.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="18" column="87" lean-forward="false" selection-start-line="18" selection-start-column="46" selection-end-line="18" selection-end-column="87" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="clique.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/twitter_profiling/clique_profiling/clique.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="185">
-              <caret line="46" column="0" lean-forward="false" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
+            <state relative-caret-position="495">
+              <caret line="49" column="0" lean-forward="false" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
               <folding>
-                <element signature="e#15#33#0" expanded="true" />
-                <element signature="e#2023#2162#0" expanded="false" />
-                <element signature="e#2592#2896#0" expanded="false" />
-                <element signature="e#6315#7173#0" expanded="false" />
-                <element signature="e#7236#7448#0" expanded="false" />
-                <element signature="e#7513#7678#0" expanded="false" />
-                <element signature="e#7748#8200#0" expanded="false" />
-                <element signature="e#8270#9494#0" expanded="false" />
-                <element signature="e#9594#9661#0" expanded="false" />
-                <element signature="e#9724#9893#0" expanded="false" />
-                <element signature="e#10856#11123#0" expanded="false" />
-                <element signature="e#11165#11272#0" expanded="false" />
-                <element signature="e#11362#11819#0" expanded="false" />
-                <element signature="e#12120#13081#0" expanded="false" />
-                <element signature="e#13122#13230#0" expanded="false" />
-                <element signature="e#13314#14024#0" expanded="false" />
-                <element signature="e#14099#14450#0" expanded="false" />
-                <element signature="e#14501#14652#0" expanded="false" />
-                <element signature="e#14730#15143#0" expanded="false" />
-                <element signature="e#15218#15526#0" expanded="false" />
-                <element signature="e#16474#16562#0" expanded="false" />
+                <element signature="e#0#57#0" expanded="true" />
+                <element signature="e#1006#1499#0" expanded="false" />
+                <element signature="e#1696#1833#0" expanded="false" />
+                <element signature="e#1892#2907#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="utility.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/twitter_profiling/clique_profiling/utility.py">
+      <file leaf-file-name="clique_graph.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/twitter_profiling/clique_profiling/clique_graph.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="211">
-              <caret line="22" column="28" lean-forward="false" selection-start-line="22" selection-start-column="28" selection-end-line="22" selection-end-column="28" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="community.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/twitter_profiling/community/community.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="656">
-              <caret line="79" column="31" lean-forward="true" selection-start-line="79" selection-start-column="31" selection-end-line="79" selection-end-column="31" />
+            <state relative-caret-position="782">
+              <caret line="51" column="101" lean-forward="true" selection-start-line="51" selection-start-column="101" selection-end-line="51" selection-end-column="101" />
               <folding>
-                <element signature="e#0#60#0" expanded="true" />
+                <element signature="e#0#25#0" expanded="true" />
+                <element signature="e#1436#1451#0" expanded="false" />
+                <element signature="e#3006#4147#0" expanded="false" />
+                <element signature="e#4414#4438#0" expanded="false" />
+                <marker date="1512251723000" expanded="false" signature="4266:5532" ph="..." />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="user_info.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/twitter_api/user_info.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="578">
-              <caret line="34" column="0" lean-forward="true" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -186,23 +150,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>with_profiles_vectors_scores</find>
-      <find>pandas</find>
-      <find>5946ad9af810d5692252fc13</find>
-      <find>5946a9daf810d569224df7d4</find>
-      <find>5946a906f810d569224c7191</find>
-      <find>5946ad9af810d5692252fc19</find>
-      <find>5946a9daf810d569224df931</find>
-      <find>5946a9daf810d569224dfaec</find>
-      <find>compute_weighted_profile</find>
-      <find>nei</find>
-      <find>user_set</find>
-      <find>interests_data</find>
-      <find>get_similar_cliques_on_nodes</find>
-      <find>get_similar_community_on_nodes</find>
-      <find>get_similar</find>
-      <find>clique_dao</find>
-      <find>Community</find>
       <find>get_id</find>
       <find>is</find>
       <find>del</find>
@@ -214,8 +161,25 @@
       <find>not valid ids passed to get_cliques in clique_dao</find>
       <find>comm_to_delete</find>
       <find>cliques</find>
-      <find>step</find>
       <find>not a valid ObjectId</find>
+      <find>build</find>
+      <find>step n</find>
+      <find>vector_</find>
+      <find>minimum_num_of_interests</find>
+      <find>step</find>
+      <find>Clique</find>
+      <find>69008563</find>
+      <find>interests_data</find>
+      <find>__retrieve_interests_data</find>
+      <find>number of profiles retrieved</find>
+      <find>profile_cache</find>
+      <find>retrieved</find>
+      <find>print</find>
+      <find>not val</find>
+      <find>not va</find>
+      <find>rac</find>
+      <find>loadi</find>
+      <find>profile_dao</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -244,13 +208,10 @@
         <option value="$PROJECT_DIR$/twitter_clique/maximal_clique.py" />
         <option value="$PROJECT_DIR$/twitter_clique/cliques_graph.py" />
         <option value="$PROJECT_DIR$/twitter_clique/clique_profile_dao.py" />
-        <option value="$PROJECT_DIR$/twitter_profiling/profiling_operators/cohesion/conductance.py" />
         <option value="$PROJECT_DIR$/twitter_profiling/profiling_operators/cohesion/cohesion.py" />
         <option value="$PROJECT_DIR$/twitter_profiling/profiling_operators/cohesion/set_cohesion.py" />
         <option value="$PROJECT_DIR$/twitter_clique/cliques_graph_routines.py" />
         <option value="$PROJECT_DIR$/twitter_profiling/profiling_operators/cohesion/graph_cohesion.py" />
-        <option value="$PROJECT_DIR$/twitter_profiling/user_profiling/user_dao.py" />
-        <option value="$PROJECT_DIR$/twitter_profiling/user_profiling/profile_dao.py" />
         <option value="$PROJECT_DIR$/twitter_profiling/clique_clustering/hierarchical.py" />
         <option value="$PROJECT_DIR$/twitter_graph/graph.py" />
         <option value="$PROJECT_DIR$/twitter_profiling/clique_clustering/density.py" />
@@ -258,34 +219,42 @@
         <option value="$PROJECT_DIR$/sample.txt" />
         <option value="$PROJECT_DIR$/twitter_profiling/clique_profiling/spark_clique_graph.py" />
         <option value="$PROJECT_DIR$/spark_test.py" />
-        <option value="$PROJECT_DIR$/twitter_profiling/profiling_operators/similarity.py" />
         <option value="/PyFunctionTypeComment Fragment (clique.py:2708).functionTypeComment" />
-        <option value="$PROJECT_DIR$/twitter_mongodb/twitterdb_instance.py" />
         <option value="$PROJECT_DIR$/twitter_profiling/community/community_dao.py" />
         <option value="$PROJECT_DIR$/twitter_profiling/profiling_operators/means.py" />
-        <option value="$PROJECT_DIR$/twitter_profiling/profiling_operators/cohesion/vector_cohesion.py" />
-        <option value="$PROJECT_DIR$/twitter_profiling/profiling_operators/intersection.py" />
         <option value="$PROJECT_DIR$/trash/utilities.py" />
         <option value="$PROJECT_DIR$/twitter_test/detection_tests.py" />
         <option value="$PROJECT_DIR$/twitter_profiling/not_computed.txt" />
         <option value="$PROJECT_DIR$/twitter_test/prova.py" />
         <option value="$PROJECT_DIR$/twitter_test/retrieve_tweets.py" />
+        <option value="$PROJECT_DIR$/twitter_api/user_info.py" />
+        <option value="$PROJECT_DIR$/twitter_profiling/profiling_operators/cohesion/vector_cohesion.py" />
+        <option value="$PROJECT_DIR$/twitter_profiling/profiling_operators/similarity.py" />
+        <option value="$PROJECT_DIR$/twitter_profiling/user_profiling/user_dao.py" />
+        <option value="$PROJECT_DIR$/twitter_profiling/profiling_operators/cohesion/conductance.py" />
         <option value="$PROJECT_DIR$/twitter_profiling/community/community.py" />
-        <option value="$PROJECT_DIR$/twitter_clique/clique_dao.py" />
+        <option value="$PROJECT_DIR$/twitter_testing/profiling_metrics.py" />
+        <option value="$PROJECT_DIR$/twitter_testing/prova.py" />
+        <option value="$PROJECT_DIR$/twitter_profiling/profiling_operators/intersection.py" />
+        <option value="$PROJECT_DIR$/twitter_profiling/clique_profiling/utility.py" />
+        <option value="$PROJECT_DIR$/twitter_testing/tweet_utility.py" />
+        <option value="$PROJECT_DIR$/twitter_profiling/time_log.txt" />
         <option value="$PROJECT_DIR$/twitter_profiling/clique_profiling/clique.py" />
         <option value="$PROJECT_DIR$/twitter_profiling/clique_profiling/clique_graph.py" />
-        <option value="$PROJECT_DIR$/twitter_profiling/clique_profiling/utility.py" />
-        <option value="$PROJECT_DIR$/twitter_profiling/community/dao/community_dao.py" />
-        <option value="$PROJECT_DIR$/twitter_profiling/main.py" />
+        <option value="$PROJECT_DIR$/twitter_mongodb/twitterdb_instance.py" />
         <option value="$PROJECT_DIR$/twitter_profiling/clique_profiling/routines.py" />
-        <option value="$PROJECT_DIR$/twitter_api/user_info.py" />
+        <option value="$PROJECT_DIR$/twitter_profiling/user_profiling/profile_dao.py" />
+        <option value="$PROJECT_DIR$/twitter_profiling/community/dao/community_dao.py" />
+        <option value="$PROJECT_DIR$/twitter_clique/clique_dao.py" />
+        <option value="$PROJECT_DIR$/twitter_profiling/main.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" fullScreen="true">
-    <option name="y" value="-768" />
-    <option name="width" value="1360" />
-    <option name="height" value="768" />
+    <option name="x" value="39" />
+    <option name="y" value="-1024" />
+    <option name="width" value="1280" />
+    <option name="height" value="1024" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -332,11 +301,6 @@
             <path>
               <item name="twitterProfiling" type="b2602c69:ProjectViewProjectNode" />
               <item name="twitterProfiling" type="462c0819:PsiDirectoryNode" />
-              <item name="twitter_api" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="twitterProfiling" type="b2602c69:ProjectViewProjectNode" />
-              <item name="twitterProfiling" type="462c0819:PsiDirectoryNode" />
               <item name="twitter_clique" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -344,12 +308,48 @@
               <item name="twitterProfiling" type="462c0819:PsiDirectoryNode" />
               <item name="twitter_profiling" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="twitterProfiling" type="b2602c69:ProjectViewProjectNode" />
+              <item name="twitterProfiling" type="462c0819:PsiDirectoryNode" />
+              <item name="twitter_profiling" type="462c0819:PsiDirectoryNode" />
+              <item name="clique_profiling" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="twitterProfiling" type="b2602c69:ProjectViewProjectNode" />
+              <item name="twitterProfiling" type="462c0819:PsiDirectoryNode" />
+              <item name="twitter_profiling" type="462c0819:PsiDirectoryNode" />
+              <item name="community" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="twitterProfiling" type="b2602c69:ProjectViewProjectNode" />
+              <item name="twitterProfiling" type="462c0819:PsiDirectoryNode" />
+              <item name="twitter_profiling" type="462c0819:PsiDirectoryNode" />
+              <item name="community" type="462c0819:PsiDirectoryNode" />
+              <item name="dao" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="twitterProfiling" type="b2602c69:ProjectViewProjectNode" />
+              <item name="twitterProfiling" type="462c0819:PsiDirectoryNode" />
+              <item name="twitter_profiling" type="462c0819:PsiDirectoryNode" />
+              <item name="profiling_operators" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="twitterProfiling" type="b2602c69:ProjectViewProjectNode" />
+              <item name="twitterProfiling" type="462c0819:PsiDirectoryNode" />
+              <item name="twitter_profiling" type="462c0819:PsiDirectoryNode" />
+              <item name="user_profiling" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="twitterProfiling" type="b2602c69:ProjectViewProjectNode" />
+              <item name="twitterProfiling" type="462c0819:PsiDirectoryNode" />
+              <item name="twitter_testing" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scratches" />
       <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -382,7 +382,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.clique_dao">
+  <component name="RunManager" selected="Python.main">
     <configuration name="clique_dao" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -396,23 +396,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="twitterProfiling" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/twitter_clique/clique_dao.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-    </configuration>
-    <configuration name="community" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/twitter_profiling/community" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="twitterProfiling" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/twitter_profiling/community/community.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -434,55 +417,72 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
-    <configuration name="user_info" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="profile_dao" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/twitter_api" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/twitter_profiling/user_profiling" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="twitterProfiling" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/twitter_api/user_info.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/twitter_profiling/user_profiling/profile_dao.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
-    <configuration name="utilities" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="profiling_metrics" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/trash" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/twitter_testing" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="twitterProfiling" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/trash/utilities.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/twitter_testing/profiling_metrics.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="prova" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/twitter_testing" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="twitterProfiling" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/twitter_testing/prova.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
     <list size="6">
       <item index="0" class="java.lang.String" itemvalue="Python.spark_test" />
-      <item index="1" class="java.lang.String" itemvalue="Python.main" />
-      <item index="2" class="java.lang.String" itemvalue="Python.clique_dao" />
-      <item index="3" class="java.lang.String" itemvalue="Python.community" />
-      <item index="4" class="java.lang.String" itemvalue="Python.utilities" />
-      <item index="5" class="java.lang.String" itemvalue="Python.user_info" />
+      <item index="1" class="java.lang.String" itemvalue="Python.profiling_metrics" />
+      <item index="2" class="java.lang.String" itemvalue="Python.prova" />
+      <item index="3" class="java.lang.String" itemvalue="Python.profile_dao" />
+      <item index="4" class="java.lang.String" itemvalue="Python.main" />
+      <item index="5" class="java.lang.String" itemvalue="Python.clique_dao" />
     </list>
     <recent_temporary>
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Python.main" />
         <item index="1" class="java.lang.String" itemvalue="Python.clique_dao" />
-        <item index="2" class="java.lang.String" itemvalue="Python.user_info" />
-        <item index="3" class="java.lang.String" itemvalue="Python.utilities" />
-        <item index="4" class="java.lang.String" itemvalue="Python.community" />
+        <item index="2" class="java.lang.String" itemvalue="Python.profile_dao" />
+        <item index="3" class="java.lang.String" itemvalue="Python.prova" />
+        <item index="4" class="java.lang.String" itemvalue="Python.profiling_metrics" />
       </list>
     </recent_temporary>
   </component>
@@ -605,7 +605,21 @@
       <option name="project" value="LOCAL" />
       <updated>1511349061668</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="partial fixing of ghost removed clique">
+      <created>1511743522414</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1511743522414</updated>
+    </task>
+    <task id="LOCAL-00017" summary="different weight for pagerank, statistical and testing features">
+      <created>1512168192939</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1512168192939</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TodoView">
@@ -617,47 +631,27 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="-768" width="1360" height="768" extended-state="0" />
+    <frame x="39" y="-1024" width="1280" height="1024" extended-state="0" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1737481" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18093699" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3266187" sideWeight="0.4970588" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2791367" sideWeight="0.51365703" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32230216" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36546764" sideWeight="0.48937786" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.265144" sideWeight="0.51331204" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20655411" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2791367" sideWeight="0.48634294" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3856115" sideWeight="0.48402557" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33438486" sideWeight="0.48937786" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33956835" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.37697843" sideWeight="0.48869145" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.42733812" sideWeight="0.48668796" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32852808" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32174778" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
-    <layout-to-restore>
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3266187" sideWeight="0.4970588" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32571995" sideWeight="0.50745475" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32571995" sideWeight="0.49254525" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20655411" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31281033" sideWeight="0.48935038" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33956835" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13951011" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32492113" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32174778" sideWeight="0.491654" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32852808" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-    </layout-to-restore>
   </component>
   <component name="Vcs.Log.History.Properties">
     <option name="COLUMN_ORDER">
@@ -714,24 +708,17 @@
     <MESSAGE value="solved bug in pageranl computation when personalization map is empty" />
     <MESSAGE value="check if the id is in visited ids also here to avoid useless computation" />
     <MESSAGE value="check if the id is in visited ids set to avoid useless computation" />
-    <option name="LAST_COMMIT_MESSAGE" value="check if the id is in visited ids set to avoid useless computation" />
+    <MESSAGE value="partial fixing of ghost removed clique" />
+    <MESSAGE value="deleted prints" />
+    <MESSAGE value="different weight for pagerank, statistical and testing features" />
+    <option name="LAST_COMMIT_MESSAGE" value="different weight for pagerank, statistical and testing features" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/twitter_profiling/community/dao/community_dao.py</url>
-          <line>85</line>
-          <option name="timeStamp" value="324" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/twitter_profiling/community/dao/community_dao.py</url>
-          <line>133</line>
-          <option name="timeStamp" value="347" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/twitter_profiling/clique_profiling/routines.py</url>
-          <line>97</line>
+          <line>111</line>
           <option name="timeStamp" value="353" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -740,29 +727,39 @@
           <option name="timeStamp" value="358" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/twitter_profiling/clique_profiling/routines.py</url>
-          <line>271</line>
-          <option name="timeStamp" value="363" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/twitter_profiling/community/community.py</url>
-          <line>88</line>
+          <line>96</line>
           <option name="timeStamp" value="365" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/twitter_profiling/community/community.py</url>
-          <line>75</line>
+          <line>74</line>
           <option name="timeStamp" value="366" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/twitter_profiling/clique_profiling/routines.py</url>
-          <line>134</line>
+          <line>154</line>
           <option name="timeStamp" value="393" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/twitter_profiling/main.py</url>
-          <line>137</line>
-          <option name="timeStamp" value="395" />
+          <url>file://$PROJECT_DIR$/twitter_profiling/profiling_operators/similarity.py</url>
+          <line>22</line>
+          <option name="timeStamp" value="399" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/twitter_profiling/community/community.py</url>
+          <line>108</line>
+          <option name="timeStamp" value="400" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/twitter_profiling/community/community.py</url>
+          <line>85</line>
+          <option name="timeStamp" value="401" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/twitter_profiling/profiling_operators/intersection.py</url>
+          <line>69</line>
+          <option name="timeStamp" value="412" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -775,109 +772,11 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="397" />
+      <option name="time" value="458" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file:///Library/Python/2.7/site-packages/networkx/classes/graph.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="148">
-          <caret line="1081" column="0" lean-forward="false" selection-start-line="1081" selection-start-column="0" selection-end-line="1081" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_profiling/profiling_operators/cohesion/set_cohesion.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="406">
-          <caret line="38" column="57" lean-forward="false" selection-start-line="38" selection-start-column="38" selection-end-line="38" selection-end-column="57" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/scipy/spatial/distance.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2186">
-          <caret line="257" column="4" lean-forward="false" selection-start-line="257" selection-start-column="4" selection-end-line="257" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_profiling/clique_clustering/hierarchical.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_profiling/profiling_operators/cohesion/graph_cohesion.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="21" column="28" lean-forward="false" selection-start-line="21" selection-start-column="28" selection-end-line="21" selection-end-column="28" />
-          <folding>
-            <element signature="e#1304#2275#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_graph/graph.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1836">
-          <caret line="111" column="134" lean-forward="false" selection-start-line="111" selection-start-column="134" selection-end-line="111" selection-end-column="134" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/multiprocessing/pool.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="566" column="0" lean-forward="false" selection-start-line="566" selection-start-column="0" selection-end-line="566" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_profiling/clique_clustering/density.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#34#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/derby.log">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="59" lean-forward="true" selection-start-line="12" selection-start-column="59" selection-end-line="12" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/metastore_db/log/README_DO_NOT_TOUCH_FILES.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/metastore_db/service.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sample.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="51" lean-forward="false" selection-start-line="4" selection-start-column="51" selection-end-line="4" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/__main__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="29" lean-forward="false" selection-start-line="0" selection-start-column="29" selection-end-line="0" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/lib/python2.7/site-packages/pyspark/sql/session.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="220">
@@ -906,20 +805,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_mongodb/twitterdb_instance.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/Cellar/python/2.7.13/Frameworks/Python.framework/Versions/2.7/lib/python2.7/multiprocessing/pool.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="407">
-          <caret line="125" column="1" lean-forward="true" selection-start-line="125" selection-start-column="1" selection-end-line="125" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/lib/python2.7/site-packages/pymongo/results.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="127">
@@ -927,43 +812,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///usr/local/lib/python2.7/site-packages/pymongo/periodic_executor.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="158">
-          <caret line="129" column="0" lean-forward="false" selection-start-line="129" selection-start-column="0" selection-end-line="129" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_profiling/profiling_operators/cohesion/vector_cohesion.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="94">
-          <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_profiling/profiling_operators/means.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="13" column="0" lean-forward="false" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/lib/python2.7/site-packages/networkx/algorithms/operators/all.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="233">
           <caret line="123" column="0" lean-forward="false" selection-start-line="123" selection-start-column="0" selection-end-line="123" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_profiling/profiling_operators/similarity.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="253">
-          <caret line="28" column="0" lean-forward="false" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
-          <folding>
-            <element signature="e#335#463#0" expanded="false" />
-            <element signature="e#2314#3151#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -978,17 +830,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="106">
           <caret line="1059" column="20" lean-forward="true" selection-start-line="1059" selection-start-column="20" selection-end-line="1059" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_profiling/profiling_operators/intersection.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="292">
-          <caret line="29" column="71" lean-forward="true" selection-start-line="29" selection-start-column="71" selection-end-line="29" selection-end-column="71" />
-          <folding>
-            <element signature="e#0#21#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1003,7 +844,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
           <caret line="11" column="46" lean-forward="false" selection-start-line="11" selection-start-column="46" selection-end-line="11" selection-end-column="46" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1011,39 +851,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="390">
           <caret line="54" column="27" lean-forward="false" selection-start-line="54" selection-start-column="27" selection-end-line="54" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_profiling/profiling_operators/cohesion/conductance.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="12" column="10" lean-forward="true" selection-start-line="12" selection-start-column="10" selection-end-line="12" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_test/detection_tests.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/lib/python2.7/site-packages/pymongo/cursor.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="1125" column="0" lean-forward="false" selection-start-line="1125" selection-start-column="0" selection-end-line="1125" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="291">
-          <caret line="1598" column="0" lean-forward="false" selection-start-line="1598" selection-start-column="0" selection-end-line="1598" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1051,7 +858,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="352">
           <caret line="4350" column="0" lean-forward="false" selection-start-line="4340" selection-start-column="0" selection-end-line="4350" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1059,33 +865,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_test/retrieve_tweets.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_test/prova.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="3" column="12" lean-forward="false" selection-start-line="3" selection-start-column="12" selection-end-line="3" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_profiling/community/community.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="656">
-          <caret line="79" column="31" lean-forward="true" selection-start-line="79" selection-start-column="31" selection-end-line="79" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#60#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1093,109 +872,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1">
           <caret line="0" column="75" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="10375" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_profiling/clique_profiling/clique_graph.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="13" column="25" lean-forward="false" selection-start-line="13" selection-start-column="25" selection-end-line="13" selection-end-column="25" />
-          <folding>
-            <element signature="e#2502#3643#0" expanded="false" />
-            <element signature="e#3767#5028#0" expanded="false" />
-            <element signature="e#3910#3934#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_profiling/community/dao/community_dao.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="188">
-          <caret line="87" column="43" lean-forward="false" selection-start-line="87" selection-start-column="43" selection-end-line="87" selection-end-column="43" />
-          <folding>
-            <element signature="e#0#57#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_profiling/clique_profiling/clique.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="46" column="0" lean-forward="false" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
-          <folding>
-            <element signature="e#15#33#0" expanded="true" />
-            <element signature="e#2023#2162#0" expanded="false" />
-            <element signature="e#2592#2896#0" expanded="false" />
-            <element signature="e#6315#7173#0" expanded="false" />
-            <element signature="e#7236#7448#0" expanded="false" />
-            <element signature="e#7513#7678#0" expanded="false" />
-            <element signature="e#7748#8200#0" expanded="false" />
-            <element signature="e#8270#9494#0" expanded="false" />
-            <element signature="e#9594#9661#0" expanded="false" />
-            <element signature="e#9724#9893#0" expanded="false" />
-            <element signature="e#10856#11123#0" expanded="false" />
-            <element signature="e#11165#11272#0" expanded="false" />
-            <element signature="e#11362#11819#0" expanded="false" />
-            <element signature="e#12120#13081#0" expanded="false" />
-            <element signature="e#13122#13230#0" expanded="false" />
-            <element signature="e#13314#14024#0" expanded="false" />
-            <element signature="e#14099#14450#0" expanded="false" />
-            <element signature="e#14501#14652#0" expanded="false" />
-            <element signature="e#14730#15143#0" expanded="false" />
-            <element signature="e#15218#15526#0" expanded="false" />
-            <element signature="e#16474#16562#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_profiling/clique_profiling/utility.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="211">
-          <caret line="22" column="28" lean-forward="false" selection-start-line="22" selection-start-column="28" selection-end-line="22" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_profiling/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="129" column="27" lean-forward="false" selection-start-line="129" selection-start-column="27" selection-end-line="129" selection-end-column="27" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-            <element signature="e#553#710#0" expanded="false" />
-            <element signature="e#744#1504#0" expanded="false" />
-            <element signature="e#1558#1868#0" expanded="false" />
-            <element signature="e#1936#2549#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_profiling/clique_profiling/routines.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="275" column="13" lean-forward="false" selection-start-line="275" selection-start-column="13" selection-end-line="275" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-            <element signature="e#612#630#0" expanded="false" />
-            <element signature="e#1004#2309#0" expanded="false" />
-            <element signature="e#5341#5388#0" expanded="false" />
-            <element signature="e#5418#5792#0" expanded="false" />
-            <element signature="e#5844#6159#0" expanded="false" />
-            <element signature="e#6320#7792#0" expanded="false" />
-            <element signature="e#7531#7653#0" expanded="false" />
-            <element signature="e#10550#10754#0" expanded="false" />
-            <element signature="e#10821#11176#0" expanded="false" />
-            <element signature="e#11232#11433#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/twitter_profiling/user_profiling/user_dao.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="512">
-          <caret line="50" column="0" lean-forward="false" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1203,24 +879,310 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="578">
           <caret line="34" column="0" lean-forward="true" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/twitter_profiling/profiling_operators/cohesion/vector_cohesion.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/twitter_profiling/profiling_operators/similarity.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="18" column="8" lean-forward="true" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="8" />
+          <folding>
+            <element signature="e#335#463#0" expanded="false" />
+            <element signature="e#2337#3174#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/twitter_profiling/profiling_operators/cohesion/topological_metrics.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="56" column="0" lean-forward="false" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prova.txt" />
+    <entry file="file://$PROJECT_DIR$/nn.txt" />
+    <entry file="file://$PROJECT_DIR$/cc.txt" />
+    <entry file="file://$PROJECT_DIR$/provolone.txt" />
+    <entry file="file://$PROJECT_DIR$/sample.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="51" lean-forward="false" selection-start-line="4" selection-start-column="51" selection-end-line="4" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/twitter_testing/detection_tests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python2.7/site-packages/pymongo/cursor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="121">
+          <caret line="1020" column="0" lean-forward="false" selection-start-line="1020" selection-start-column="0" selection-end-line="1020" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python2.7/site-packages/pymongo/mongo_client.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="291">
+          <caret line="949" column="0" lean-forward="false" selection-start-line="949" selection-start-column="0" selection-end-line="949" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python2.7/site-packages/pymongo/network.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="128">
+          <caret line="168" column="0" lean-forward="false" selection-start-line="168" selection-start-column="0" selection-end-line="168" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python2.7/site-packages/pymongo/periodic_executor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="121">
+          <caret line="128" column="0" lean-forward="false" selection-start-line="128" selection-start-column="0" selection-end-line="128" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/twitter_testing/profiling_metrics.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="66" column="367" lean-forward="false" selection-start-line="66" selection-start-column="0" selection-end-line="66" selection-end-column="367" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/Cellar/python/2.7.13/Frameworks/Python.framework/Versions/2.7/lib/python2.7/multiprocessing/pool.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="324" column="0" lean-forward="false" selection-start-line="324" selection-start-column="0" selection-end-line="324" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/Cellar/python/2.7.13/Frameworks/Python.framework/Versions/2.7/lib/python2.7/multiprocessing/process.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="159">
+          <caret line="202" column="0" lean-forward="false" selection-start-line="202" selection-start-column="0" selection-end-line="202" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/Cellar/python/2.7.13/Frameworks/Python.framework/Versions/2.7/lib/python2.7/multiprocessing/forking.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="149" column="0" lean-forward="false" selection-start-line="149" selection-start-column="0" selection-end-line="149" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/twitter_testing/prova.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="74" lean-forward="false" selection-start-line="7" selection-start-column="74" selection-end-line="7" selection-end-column="74" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/twitter_profiling/profiling_operators/means.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="254">
+          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/twitter_profiling/clique_profiling/utility.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/twitter_profiling/user_profiling/user_dao.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="444">
+          <caret line="31" column="27" lean-forward="false" selection-start-line="31" selection-start-column="27" selection-end-line="31" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/twitter_profiling/time_log.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/twitter_profiling/profiling_operators/intersection.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="367">
+          <caret line="58" column="10" lean-forward="false" selection-start-line="58" selection-start-column="5" selection-end-line="58" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/twitter_profiling/clique_profiling/clique.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="29" column="0" lean-forward="false" selection-start-line="29" selection-start-column="0" selection-end-line="29" selection-end-column="0" />
+          <folding>
+            <element signature="e#15#33#0" expanded="false" />
+            <element signature="e#2087#2226#0" expanded="false" />
+            <element signature="e#2265#2294#0" expanded="false" />
+            <element signature="e#2480#2658#0" expanded="false" />
+            <element signature="e#2697#3001#0" expanded="false" />
+            <element signature="e#3066#3225#0" expanded="false" />
+            <element signature="e#3297#3574#0" expanded="false" />
+            <element signature="e#3647#4394#0" expanded="false" />
+            <element signature="e#4502#5686#0" expanded="false" />
+            <element signature="e#5756#6086#0" expanded="false" />
+            <element signature="e#6151#6730#0" expanded="false" />
+            <element signature="e#6801#7659#0" expanded="false" />
+            <element signature="e#7722#7934#0" expanded="false" />
+            <element signature="e#7999#8164#0" expanded="false" />
+            <element signature="e#8234#8686#0" expanded="false" />
+            <element signature="e#8756#9980#0" expanded="false" />
+            <element signature="e#10080#10147#0" expanded="false" />
+            <element signature="e#10210#10379#0" expanded="false" />
+            <element signature="e#11393#11660#0" expanded="false" />
+            <element signature="e#11702#11809#0" expanded="false" />
+            <element signature="e#11899#12356#0" expanded="false" />
+            <element signature="e#12657#13618#0" expanded="false" />
+            <element signature="e#13659#13767#0" expanded="false" />
+            <element signature="e#14636#14987#0" expanded="false" />
+            <element signature="e#15038#15189#0" expanded="false" />
+            <element signature="e#15755#16063#0" expanded="false" />
+            <element signature="e#17125#17213#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="26537">
+          <caret line="1598" column="0" lean-forward="false" selection-start-line="1598" selection-start-column="0" selection-end-line="1598" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/Cellar/python/2.7.13/Frameworks/Python.framework/Versions/2.7/lib/python2.7/abc.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2176">
+          <caret line="130" column="0" lean-forward="false" selection-start-line="130" selection-start-column="0" selection-end-line="130" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/twitter_profiling/clique_profiling/clique_graph.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="782">
+          <caret line="51" column="101" lean-forward="true" selection-start-line="51" selection-start-column="101" selection-end-line="51" selection-end-column="101" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
+            <element signature="e#1436#1451#0" expanded="false" />
+            <element signature="e#3006#4147#0" expanded="false" />
+            <element signature="e#4414#4438#0" expanded="false" />
+            <marker date="1512251723000" expanded="false" signature="4266:5532" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/twitter_mongodb/twitterdb_instance.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="14" lean-forward="false" selection-start-line="14" selection-start-column="14" selection-end-line="14" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/twitter_profiling/community/community.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="935">
+          <caret line="58" column="8" lean-forward="false" selection-start-line="58" selection-start-column="8" selection-end-line="58" selection-end-column="8" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/twitter_profiling/user_profiling/profile_dao.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="87" lean-forward="false" selection-start-line="18" selection-start-column="46" selection-end-line="18" selection-end-column="87" />
+        <state relative-caret-position="495">
+          <caret line="49" column="0" lean-forward="false" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#57#0" expanded="true" />
+            <element signature="e#1006#1499#0" expanded="false" />
+            <element signature="e#1696#1833#0" expanded="false" />
+            <element signature="e#1892#2907#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/twitter_profiling/community/dao/community_dao.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1073">
+          <caret line="83" column="42" lean-forward="false" selection-start-line="83" selection-start-column="42" selection-end-line="83" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/twitter_profiling/clique_profiling/routines.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="736">
+          <caret line="80" column="40" lean-forward="false" selection-start-line="80" selection-start-column="40" selection-end-line="80" selection-end-column="40" />
+          <folding>
+            <element signature="e#0#16#0" expanded="true" />
+            <element signature="e#595#613#0" expanded="false" />
+            <element signature="e#1209#1521#0" expanded="false" />
+            <element signature="e#5223#5262#0" expanded="false" />
+            <element signature="e#6423#6470#0" expanded="false" />
+            <element signature="e#6500#6874#0" expanded="false" />
+            <element signature="e#7402#8874#0" expanded="false" />
+            <element signature="e#8613#8735#0" expanded="false" />
+            <element signature="e#8999#11127#0" expanded="false" />
+            <element signature="e#11680#11884#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/twitter_testing/tweet_utility.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/twitter_testing/deleted_ids.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/twitter_clique/clique_dao.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="201">
-          <caret line="33" column="33" lean-forward="true" selection-start-line="33" selection-start-column="33" selection-end-line="33" selection-end-column="33" />
+        <state relative-caret-position="-987">
+          <caret line="36" column="38" lean-forward="true" selection-start-line="36" selection-start-column="38" selection-end-line="36" selection-end-column="38" />
           <folding>
-            <element signature="e#1968#2150#0" expanded="false" />
+            <element signature="e#0#57#0" expanded="true" />
+            <marker date="1512305876000" expanded="false" signature="3955:4159" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/twitter_profiling/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3">
+          <caret line="121" column="21" lean-forward="false" selection-start-line="121" selection-start-column="21" selection-end-line="121" selection-end-column="21" />
+          <folding>
+            <element signature="e#681#838#0" expanded="false" />
+            <element signature="e#872#1632#0" expanded="false" />
+            <element signature="e#1686#1996#0" expanded="false" />
+            <element signature="e#2064#2677#0" expanded="false" />
           </folding>
         </state>
       </provider>

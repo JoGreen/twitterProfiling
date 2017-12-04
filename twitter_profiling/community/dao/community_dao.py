@@ -81,16 +81,11 @@ def delete(ids):
     db[collection].delete_many(query)
     # print 'request to delete', len(ids)
     #print '**********************************************************'
-    file = open('deleted_ids.txt', 'a')
-
-    clqs = list(get_cliques(ids) )
-    #print 'cliques retrieved with the id just deleted =', len(clqs)
-    if len(clqs) > 0:
-        print 'pdpdpd mongo shit'
-    ids_to_write = map(str, ids)
-    string_to_write = ",".join(ids_to_write)
-    file.write(string_to_write)
-    file.close
+    ###file = open('deleted_ids.txt', 'a')
+    ###ids_to_write = map(str, ids)
+    ###string_to_write = ",".join(ids_to_write)
+    ###file.write(string_to_write)
+    ###file.close
 
 def insert(comms):
     # type:(list[Community])->None

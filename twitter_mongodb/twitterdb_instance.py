@@ -11,7 +11,8 @@ class DbInstance:
 
 
     def getDbInstance(self): #deprecated
-        return self.db[self.db_name]# self.find_db_instance(self.db_name)
+        #return self.db[self.db_name]#
+        return self.find_db_instance(self.db_name)
 
     def find_db_instance(self, db_name):
         if not self.dbs.has_key(db_name):

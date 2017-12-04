@@ -39,22 +39,23 @@ def find_attractor(G, map_num_nodes, pagerank_with_node_weight=True):  # node wi
 
     else: # optimizable with matrix operation ?!!!!!!pandas ?
         attraction_forces = {}
-        exp = 2
+        #exp = 2
         for dst in G.nodes:
             neighbors = G.predecessors(dst)
             orbital_gravities = []
             for src in neighbors:
                 orbital_gravities.append(G.get_edge_data(src, dst)['weight'])
             if len(orbital_gravities) == 0:
-                orbital_gravities.append(0.)
-                num_exp = 0
-            else: num_exp = exp
-            denom_exp = exp-1
+                orbital_gravities.append(0.001)
+
+            #else: num_exp = exp
+
             mean = np.mean(orbital_gravities)
-            # maybe pow(map_num_nodes[dst], 2) -> think about
+
             #####**********************************************************
             # attraction_forces[dst] = pow(20 * mean, num_exp) * 1./pow(map_num_nodes[dst], denom_exp) # to avoid big attractor with low mean values eats everybody
-            attraction_forces[dst] = ( (10 * mean) ** num_exp) * 1. / (map_num_nodes[dst] ** denom_exp) # to avoid big attractor with low mean values eats everybody
+            attraction_forces[dst] = ( (1+mean)**3 ) * 1. / (map_num_nodes[dst] ** 0.5) # to avoid big attractor with low mean values eats everybody
+            #attraction_forces[dst] =  1. / (map_num_nodes[dst] ** 0.1)
             #####**********************************************************
         try:
             mapping_gravity = nx.pagerank_numpy(G, personalization= attraction_forces)
@@ -73,7 +74,8 @@ def aggregation_step(clq, visited):
     print 'expanded cliques', len(expanded)
     print 'initial number of nodes in G', len(G.nodes)
 
-    while len(list(nx.weakly_connected_components(G))) < len(G.nodes):
+    #while len(list(nx.weakly_connected_components(G))) < len(G.nodes):
+    while len(list(G.edges)) > 0:
         attractors = find_attractor(G, map_num_nodes)
         black_hole, pagerank = attractors[0]
         new_community, comm_to_delete = aggregate_nodes(G, black_hole, comms)
@@ -108,6 +110,10 @@ def aggregate_nodes(G, black_hole, comms):
         src, dst, weight = edges.pop()  # dst = black_hole
     except ValueError:
         print 'pdpdpdp'
+    except IndexError:
+        G.remove_node(black_hole)
+        print 'blackhole has no edges'
+        return None, None
 
     community, clq_to_delete, comm_to_delete = __fusion_4id_graph(comms, src, dst, G)
     if community == None and not clq_to_delete == None:
