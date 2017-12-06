@@ -73,7 +73,7 @@ def aggregation_step(clq, visited):
     G, expanded, map_num_nodes = neighbour_graph_with_id(clq, visited)
     print 'expanded cliques', len(expanded)
     print 'initial number of nodes in G', len(G.nodes)
-
+    start_num_nodes = len(G.nodes)
     #while len(list(nx.weakly_connected_components(G))) < len(G.nodes):
     while len(list(G.edges)) > 0:
         attractors = find_attractor(G, map_num_nodes)

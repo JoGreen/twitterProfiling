@@ -1,15 +1,17 @@
 from twitter_clique import clique_dao
-
+from twitter_profiling.community.dao.community_dao import do_dump
 # from clique_profiling.clique import Clique
 from clique_profiling.utility import constructor, destroy_useless_clique
 # from twitter_profiling.clique_profiling.clique_graph import neighbour_graph
 from twitter_profiling.clique_profiling.routines import aggregation_step
 import matplotlib.pyplot as plt, itertools
-# import networkx as nx
-from multiprocessing import Pool
+
+#from multiprocessing import Pool
 import os, time, math, numpy as np
 from twitter_profiling.clique_clustering.density import dbscan_on_clique_neighbourhood
 from twitter_profiling.clique_profiling.clique import Clique
+from twitter_profiling.community.dao.community_dao import get_count
+from twitter_testing.detection_tests import do_statistics
 from twitter_profiling.user_profiling.profile_dao import ProfileDao
 
 def cohesion(c):
@@ -102,8 +104,11 @@ def inizializing(restart):
             f_not_computed.close()
             f_deleted = open('deleted_ids.txt', 'w')
             f_deleted.close()
+            f_time_log= open('time_log.txt', 'w')
+            f_time_log.close()
+            return set(), set()
     except IOError :
-        destroy_useless_clique()
+        #destroy_useless_clique()
         print 'at least one of visited.txt file or deleted_ids.txt not exists or it is empty. computation is starting from scratch'
         f_deleted = open('deleted_ids.txt', 'w')
         f_deleted.close()
@@ -117,13 +122,13 @@ def update_visited_file(visited):
     visited_file.write(string_to_write)
     visited_file.close()
 
+datasets = [10, 100, 1000, 10000, 37000]
 
-
-limit_dataset = 10000
-clique_dao.create_dataset(limit_dataset)
+#limit_dataset = 100
+#clique_dao.create_dataset(limit_dataset)
 minimum_num_of_interests = Clique.minimum_num_of_interests
 
-def step(restart = False):
+def iteration(limit_dataset, restart = False):
     visited, deleted = inizializing(restart)
     # cliques = clique_dao.get_limit_maximal_cliques_on_valid_users(10)
     cliques = clique_dao.get_maximal_cliques()#.skip(5000)
@@ -164,5 +169,47 @@ def step(restart = False):
     time_log.close()
     cliques.close()
 
+
+def cycle(limit_dataset):
+    clique_dao.create_dataset(limit_dataset)
+    destroy_useless_clique()
+    n = 37000 #huge number
+    iter = 0
+    do_statistics(limit_dataset, iter)
+    while get_count() < n:
+        n = get_count()
+        iter = iter + 1
+        iteration(limit_dataset, restart=True)
+        if get_count() < n:
+            do_statistics(limit_dataset, iter, n)
+            __rename_files(limit_dataset, iter)
+            do_dump(limit_dataset, iter)
+
+
+def __rename_files(limit_dataset, iter):
+    f1 = 'visited.txt'
+    f2= 'not_computed.txt'
+    f3 = 'time_log.txt'
+    s = str(limit_dataset)+'_iter'+str(iter)+'_'
+    os.rename(f1, 'log/'+s+ f1)
+    os.rename(f2, 'log/'+s+ f2)
+    os.rename(f3, 'log/'+s+ f3)
+
+
+
+def create_folders():
+    try:
+        os.mkdir('log')
+    except OSError:
+        print 'log folder already exists.'
+    try:
+        os.mkdir('dumps')
+    except OSError:
+        print 'dumps folder already exists.'
+
+
 #ProfileDao().get_all_useful_profiles()
-step()
+#iteration()
+create_folders()
+map(cycle, datasets)
+

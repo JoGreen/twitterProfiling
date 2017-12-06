@@ -26,4 +26,7 @@ def destroy_useless_clique():
     clqs.close()
 
 def __destroy_if_useless(doc):
-    constructor(doc, delete_if_useless= True)
+    try:
+        doc['com_id']
+    except KeyError:
+        constructor(doc, delete_if_useless= True)

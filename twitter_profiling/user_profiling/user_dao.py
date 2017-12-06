@@ -1,5 +1,7 @@
 from twitter_mongodb.twitterdb_instance import DbInstance
-
+from twitter_api.user_info import UserInfo
+from twitter_profiling.user_profiling.profile_dao import ProfileDao
+import time
 
 class UserDao:
     db_name = 'twitter'
@@ -56,4 +58,19 @@ class UserDao:
         return users
 
 
+    def retrieve_users_friend(self):
+        ids = ProfileDao().get_all_useful_user_ids()
+        ids_owned = UserDao().db[self.collection].find({}).distinct('id')
+        ids_to_retrieve = set(ids).symmetric_difference(ids_owned)
+        ui = UserInfo()
+        #docs = {}
+        for id in ids_to_retrieve:
+            friends = ui.get_friends(id)
+            self.db[self.collection].insert_one({
+                'id': id,
+                'friends_count': len(friends),
+                'friends': friends})
+            time.sleep(60)
 #print(UserDao().get_friends('120639382') )
+
+#UserDao().retrieve_users_friend()

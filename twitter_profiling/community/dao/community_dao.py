@@ -1,9 +1,9 @@
 from twitter_mongodb.twitterdb_instance import DbInstance
-from twitter_clique.clique_dao import get_cliques
+#from twitter_clique.clique_dao import get_cliques
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 from pymongo.cursor import Cursor
-import itertools, time, sys
+import itertools, time, sys, subprocess
 
 collection = 'comms'
 db_name = 'twitter'
@@ -123,6 +123,10 @@ def get_communities(comm_ids):
     comms = db[collection].find({'com_id': {'$in': comm_ids}})
     return comms
 
+def get_count():
+    db = DbInstance(port, db_name).getDbInstance()
+    return db[collection].count()
+
 def __converter__(com):
     # type:(Community)-> dict
     doc = com.__dict__
@@ -137,3 +141,18 @@ def __converter__(com):
     del doc['profile']
     del doc['users']
     return doc
+
+def drop():
+    db = DbInstance(port, db_name).getDbInstance()
+    db[collection].drop()
+    print 'collection '+collection+' dropped'
+
+
+def get_all():
+    db = DbInstance(port, db_name).getDbInstance()
+    return db[collection].find()
+
+def do_dump(limit_dataset, iter):
+    # type:(int, int)->None
+    cmd = 'mongodump --db twitter --collection comms -o dumps/dump_'+str(limit_dataset)+'_iter'+str(iter)
+    print subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell= True)

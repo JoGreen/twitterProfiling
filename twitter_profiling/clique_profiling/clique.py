@@ -1,6 +1,6 @@
 # coding=utf-8
 import numpy as np
-import sys
+import sys, time
 
 import networkx as nx
 # from twitter_clique.clique_dao import get_similar_cliques_on_nodes
@@ -13,7 +13,7 @@ from twitter_profiling.profiling_operators import intersection
 from twitter_profiling.profiling_operators import similarity
 from twitter_profiling.profiling_operators.cohesion.graph_cohesion import cohesion_of_graph_profiles
 from twitter_profiling.profiling_operators.cohesion.set_cohesion import profiles_cohesion
-from twitter_profiling.profiling_operators.cohesion.vector_cohesion import cosine_cohesion_distance
+from twitter_profiling.profiling_operators.cohesion.vector_cohesion import cosine_cohesion_distance, cosine_cohesion_distance_optimized
 from twitter_profiling.user_profiling.profile_dao import ProfileDao
 from twitter_profiling.clique_profiling.utility import constructor
 from bson.errors import InvalidId
@@ -114,7 +114,7 @@ class Clique(object):
         profiles_vector_score = []
         self.get_profile(force_recompute=True, k_intersection= k_intersection)
         for raw_prof in raw_profiles:
-            profile = self.__get_interests_from_profile(raw_prof)
+            profile = self.get_interests_from_profile(raw_prof)
             if profile is not None:
 
                 scores = []
@@ -138,7 +138,7 @@ class Clique(object):
     def __linear_compute_profile(self, k_intersection= 1):
         profiles = self.get_users_profiles()
         # print(len(profiles), 'number of profiles retrieved')
-        interests = map(self.__get_interests_from_profile, profiles)
+        interests = map(self.get_interests_from_profile, profiles)
         users_interests = filter(lambda x: x != None, interests)
         self.profile = intersection.minus_k_intersection_linear(users_interests, k_intersection)
 
@@ -150,7 +150,7 @@ class Clique(object):
         # print(profiles.count(), 'number of profiles retrieved')
         print(len(profiles), 'number of profiles retrieved')
         users_interests = []
-        interests = map(self.__get_interests_from_profile, profiles)
+        interests = map(self.get_interests_from_profile, profiles)
         users_interests = filter(lambda x: x != None, interests)
         # self.profile = intersection.rawIntersection(users_interests)
         self.profile = list(
@@ -198,7 +198,7 @@ class Clique(object):
         profiles = self.get_users_profiles()
         graphs = []
         for p in profiles:
-            interests = self.__get_interests_from_profile(p)
+            interests = self.get_interests_from_profile(p)
             if interests is not None:
                 KG = self.__compute_user_knowledge_graph(interests)
                 graphs.append(KG)
@@ -242,12 +242,20 @@ class Clique(object):
 
     def get_profile_vector_similarity_with(self, clique):
         all_interests = set(self.get_weighted_profile().keys() ).union(set(clique.get_weighted_profile().keys() ))
+        v1 = []
+        v2 = []
         for i in all_interests:
             if not self.get_weighted_profile().has_key(i):
-                self.get_weighted_profile()[i] = 0.
+                #self.get_weighted_profile()[i] = 0.
+                v1.append(0.)
+            else:
+                v1.append(self.get_weighted_profile()[i])
             if not clique.get_weighted_profile().has_key(i):
-                clique.get_weighted_profile()[i] = 0.
-        return similarity.vector_similarity(self.get_weighted_profile().values(), clique.get_weighted_profile().values() )
+                #clique.get_weighted_profile()[i] = 0.
+                v2.append(0.)
+            else:
+                v2.append(clique.get_weighted_profile()[i])
+        return similarity.vector_similarity(v1, v2 )
 
     def get_id(self):
         return self.clique
@@ -268,7 +276,7 @@ class Clique(object):
         profiles_cursor = ProfileDao().getSomeProfiles(self.users)  # return a Pymongo cursor
         profiles = []
         for p in profiles_cursor:
-            i = self.__get_interests_from_profile(p)
+            i = self.get_interests_from_profile(p)
             if i is not None: profiles.append(i)
         return profiles
 
@@ -292,7 +300,8 @@ class Clique(object):
 
     def get_vectors_cohesion(self):
         profiles_vector_score = self.compute_weighted_profile(with_profiles_vectors_scores= True)
-        return cosine_cohesion_distance(profiles_vector_score) #in term of distance
+        return cosine_cohesion_distance_optimized(profiles_vector_score)  # in term of distance
+
 
     def __compute_user_weight_on_clique_knowledge_graph(self, profile):
         #type:(Clique, list(str))->nx.Graph
@@ -320,7 +329,7 @@ class Clique(object):
         if self.profile is not None:
             CliqueProfileDao().insert_clique_profile(self.clique, self.profile)
 
-    def __get_interests_from_profile(self, profile):  # profile is a dict
+    def get_interests_from_profile(self, profile):  # profile is a dict
         interest_ids = set()
 
         try:
@@ -412,59 +421,20 @@ def get_neighbours(clique):
     # type:(Clique)->list[Clique]
     clique.get_neighbours()
 
+# not used yet:::maybe in future-cons is it computes similarity i don t need--pro it computes all i need in asingle step using numpy it should be more efficient...to check
+def get_profile_vector_similarity_between_all(coms):
+    # type:(list[Clique])->np.array
+    all_interests = set().union( (com.get_weighted_profile().keys() for com in coms) )
+    vectors = []
+    for com in coms:
+        v =[]
+        for i in all_interests:
+            if not com.get_weighted_profile().has_key(i):
+                v.append(0.)
+            else:
+                v.append(com.get_weighted_profile()[i])
+    return similarity.vector_similarity_between_all(vectors)
 
 
-########################################################################################
-# c1 = Clique([
-#         "1148580931",
-# 		"728283781",
-# 		"525208028",
-# 		"17387058",
-# 		"19267015",
-# 		"462346627",
-# 		"20517081",
-# 		"20600235",
-# 		"21870376",
-# 		"22903129",
-# 		"24871896",
-# 		"29337915",
-# 		"53047484",
-# 		"63525184",
-# 		"86740435",
-# 		"162779090",
-# 		"164786871",
-# 		"456739709"
-#     ],'5946a8f0f810d569224b8c6e')#.get_knowledge_graph()
-# c2 = Clique([
-#         "1606948220",
-# 		"1114036494",
-# 		"16681420",
-# 		"17387058",
-# 		"19267015",
-# 		"20517081",
-# 		"20600235",
-# 		"21870376",
-# 		"22903129",
-# 		"24871896",
-# 		"53047484",
-# 		"67606740",
-# 		"67613844",
-# 		"86740435",
-# 		"140409019",
-# 		"462346627"
-# ], "5946a6a0f810d56922464552")
-#
-#
-# cohesion_2 = c2.get_vectors_cohesion()
-# print cohesion_2
-# print c2.weighted_profile
-# cohesion_1 = c1.get_graph_cohesion()
-# print 'cohesion of c1 clique ', cohesion_1
-# print 'cohesion of c2 clique ', cohesion_2
-#
-# chs = [cohesion_1, cohesion_2, 30.0, 440.0]
-# chs.sort()
-# print chs
-#
-# plt.hist(chs, 10)
-# plt.show()
+c = Clique([ "1148580931", "568248162", "456739709", "248254612", "152978469", "124218221", "21710527", "298537212", "52991614", "63525184", "77047730", "91361852", "127340684", "392487826" ],'5946a8f4f810d569224bc865')
+c.get_vectors_cohesion()

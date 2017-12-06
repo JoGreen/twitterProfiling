@@ -78,3 +78,9 @@ class ProfileDao:
 
 
 # print ProfileDao().interests_destribuition()
+
+    def get_all_useful_user_ids(self, skip=0, limit=0):
+        all = self.db['user_infos'].find({"info.interests.all": {"$exists": True}}, {'_id':0, 'user':1}).distinct('user')
+        return all
+
+#print ProfileDao().get_all_useful_user_ids()

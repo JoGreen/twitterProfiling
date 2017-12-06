@@ -4,6 +4,8 @@ from networkx.algorithms import approximation
 import matplotlib.pyplot as plt
 from twitter_graph import graph
 from scipy.spatial.distance import cosine
+from sklearn.metrics.pairwise import cosine_distances
+import itertools
 from sklearn.metrics.pairwise import cosine_similarity
 import sys, numpy as np
 
@@ -25,6 +27,18 @@ def vector_distance(vectors):
         sys.exit(1)
     return cosine(a,b)
 
+def vector_distance_between_all(vectors):
+    #type:(list)->float
+    try:
+        vectors = np.array(vectors)
+    except TypeError:
+        print 'vector distance needs array like inputs'
+        print vectors
+        sys.exit(1)
+    result_matrix = cosine_distances(vectors)
+    values = itertools.chain(*(result_matrix.diagonal(l).tolist()  for l in range(1,len(vectors)) ) )
+    return values
+
 def vector_similarity(a,b):
     # type:(list, list)->float
     try:
@@ -39,6 +53,18 @@ def vector_similarity(a,b):
     return result[0][1] # array([[ 1.        ,  0.38709324],
                                 #[ 0.38709324,  1.        ]]) that s an example of result
 
+
+def vector_similarity_between_all(vectors):
+    # type:(list)->float
+    try:
+        vectors = np.array(vectors)
+    except TypeError:
+        print 'wrong type input vector similarity function'
+        sys.exit(1)
+    #matrix = [a,b]
+    #matrix = np.array(matrix)
+    result = cosine_similarity(vectors)
+    return result
 
 def isomorphism_measure(G, H): #high result means low similarity
     #type:(nx.Graph, nx.Graph)->int
@@ -92,3 +118,6 @@ def __simmetric_difference(G, H):
     #nx.draw(symm_diff_graph, with_labels=True)
     #plt.show()
     return symm_diff_graph
+
+
+#print list(vector_distance_between_all([[1,2,3],[2,3,4],[1,3,4]]) )

@@ -22,7 +22,7 @@ class UserInfo:
             print(e)
 
         finally:
-            print(friends_ids)
+            #print(friends_ids)
             return friends_ids
 
     def get_retweets(self, user_id):

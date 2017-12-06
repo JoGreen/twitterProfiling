@@ -13,9 +13,9 @@ def conductance(com, is_conductance_clique = False):
 		print(inter_links_count, 'interlinks number')
 	else:
 
-		friendship = UserDao().get_friends_of(com.users)
-		igs = map(lambda t: __get_user_ingraph(com.users, t[0], t[1]), friendship)
-		ogs = map(lambda t: __get_user_outgraph(com.users, t[0], t[1]), friendship)
+		friendship = list(UserDao().get_friends_of(com.users) )
+		igs = map(lambda t: __get_user_ingraph(com.users, t['id'], t["friends"]), friendship)
+		ogs = map(lambda t: __get_user_outgraph(com.users, t['id'], t["friends"]), friendship)
 	IG = nx.compose_all(igs, 'internal_graph')
 	OG = nx.compose_all(ogs, 'outside_graph')
 	inter_links_count = IG.number_of_edges()
@@ -23,9 +23,9 @@ def conductance(com, is_conductance_clique = False):
 
 	conductance = boarder_links_count / float(2 * inter_links_count + boarder_links_count)
 
-	print('boarder_links:', boarder_links_count),
-	print('internal_links:', inter_links_count)
-	print('conductance:', conductance)
+	#print('boarder_links:', boarder_links_count),
+	#print('internal_links:', inter_links_count)
+	#print('conductance:', conductance)
 
 	return conductance
 
@@ -83,7 +83,7 @@ def __get_user_outgraph(users, user_id, friends ):
 	# for friend in friends:
 	#     if not friend in users:
 	#         edges.add((user_id, friend) )
-	edges = ((user_id, friend for friend in friends if not friend in users))
+	edges = ((user_id, friend) for friend in friends if not friend in users)
 	# else:
 	# out_edges.add((user_id, friend))
 	OG.add_edges_from(edges)

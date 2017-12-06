@@ -1,4 +1,4 @@
-from clique import Clique
+from clique import Clique, get_profile_vector_similarity_between_all
 import networkx as nx, operator
 # import matplotlib.pyplot as plt
 from multiprocessing import Pool, freeze_support
@@ -45,6 +45,11 @@ def neighbour_graph_with_id(clq, visited, lev=1):
 
             if len(graphs) > 0:
                 H = nx.compose_all(graphs)
+
+
+    # coms = [clq].append(neighb2_and_cohesion.values())
+    # similarity_matrix = get_profile_vector_similarity_between_all(coms)
+
 
 
     #should consider to check for communities presence with too low cohesion to avoid to have entering edges.

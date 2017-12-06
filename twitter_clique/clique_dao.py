@@ -7,14 +7,17 @@ from twitter_profiling.user_profiling.profile_dao import ProfileDao
 import time, sys
 from pymongo.errors import InvalidId
 from pymongo import DESCENDING
+from twitter_profiling.community.dao.community_dao import drop
 
 collection = 'comms'
 
 def get_maximal_cliques(grower_than = 6):
     # type: (int) -> Cursor
     db = DbInstance(27017, 'twitter').getDbInstance()
-    cliques = db[collection].find({"count": {"$gt": grower_than}, "com_id":{"$exists": False}},
-                                     no_cursor_timeout= True).sort([("count", DESCENDING)])
+    # cliques = db[collection].find({"count": {"$gt": grower_than}, "com_id":{"$exists": False}},
+    #                                  no_cursor_timeout= True).sort([("count", DESCENDING)])
+    cliques = db[collection].find({"count": {"$gt": grower_than} },
+                                  no_cursor_timeout=True).sort([("count", DESCENDING)])
     # print(type(cliques) )
     return cliques
 
@@ -108,11 +111,16 @@ def get_cliques(ids):
 
 def create_dataset(dimension= 1000000):
     # type: (int)->Cursor
+    drop()
     clqs = get_maximal_cliques_on_valid_users().sort([('count', DESCENDING)]).limit(dimension)
     db = DbInstance(27017, 'twitter').getDbInstance()
     cliques = list(clqs)
     clqs.close()
     db['comms'].insert_many(cliques)
+    import pymongo
+    db['comms'].create_index([('nodes', pymongo.ASCENDING)])
+    print 'dataset created'
+
 
 
 def ordered_data_set_aggregaion(dim):
