@@ -15,8 +15,10 @@ class ProfileDao:
         all = self.db['user_infos'].find()
         return all
 
-    def getSomeProfiles(self, someUsers):
+    def getSomeProfiles(self, someUsers, db=None):
         #if all(self.profile_cache.has_key(u) for u in someUsers ):
+        if db == None:
+            db = self.db
         try:
             some_profiles = []
             for u in someUsers:
@@ -24,24 +26,22 @@ class ProfileDao:
 
         except KeyError:
         #else:
-            some_profiles = self.db['user_infos'].find({"user":{"$in":someUsers} })
+            some_profiles = db['user_infos'].find({"user":{"$in":someUsers} })
         return some_profiles
 
     def get_users_without_interests(self):
         users_id = self.db['user_infos'].find({"info.interests.all":{"$exists": False}},{'user':1, '_id':0})
         return users_id
 
-    def get_all_useful_profiles(self, skip = 0, limit = 0):
+    def get_all_useful_profiles(self, skip = 0, limit = 0, cache= False):
         all= self.db['user_infos'].find({"info.interests.all":{"$exists": True}},{"info.platform":0, "info.valid":0, "info.type":0, "_id":0, "__v":0, "info.gender":0} )
-        #useless_users = self.get_users_without_interests()
-        #all = self.db['user_infos'].find({"user": {"$nin": list(useless_users) } } )
-
-        print 'done'
         all.skip(skip)
-        all.limit(limit)
+        #all.limit(limit)
         self.state = 0
-        map(self.initialize_profile_cache, all)
-        print len(self.profile_cache.keys() )
+        if cache:
+            map(self.initialize_profile_cache, all)
+            print len(self.profile_cache.keys() )
+        return all
 
     def initialize_profile_cache(self, p):
         self.state = self.state + 1
@@ -82,5 +82,9 @@ class ProfileDao:
     def get_all_useful_user_ids(self, skip=0, limit=0):
         all = self.db['user_infos'].find({"info.interests.all": {"$exists": True}}, {'_id':0, 'user':1}).distinct('user')
         return all
+
+    def get_new_client(self):
+        return DbInstance(ProfileDao.port, ProfileDao.db_name).getDbInstance(new_client=True)
+
 
 #print ProfileDao().get_all_useful_user_ids()

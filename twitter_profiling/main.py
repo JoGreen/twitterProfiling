@@ -122,7 +122,7 @@ def update_visited_file(visited):
     visited_file.write(string_to_write)
     visited_file.close()
 
-datasets = [10, 100, 1000, 10000, 37000]
+datasets = [37000]
 
 #limit_dataset = 100
 #clique_dao.create_dataset(limit_dataset)
@@ -208,8 +208,8 @@ def create_folders():
         print 'dumps folder already exists.'
 
 
-#ProfileDao().get_all_useful_profiles()
-#iteration()
+#ProfileDao().get_all_useful_profiles(cache= True)
+
 create_folders()
 map(cycle, datasets)
 

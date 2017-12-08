@@ -45,7 +45,7 @@ class Clique(object):
             self.users = users
             self.clique = id
 
-            if delete_if_useless and len(self.get_profile() ) < 4:
+            if delete_if_useless and len(self.get_profile() ) <=  self.minimum_num_of_interests:
                 print 'autodestroying in 3 2 1 cause i m useless sigh sigh siBBBOOOOOOOOOMMMMMMM'
                 community_dao.delete([self.get_id()] )
 
@@ -58,6 +58,8 @@ class Clique(object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    def new_mongo_client(self):
+        self.profile_dao.set_new_client()
     # search if a profile already exists ow compute and persist it for future usage
     # return a profile
     def get_profile(self, force_recompute= False, k_intersection=1):
@@ -107,9 +109,9 @@ class Clique(object):
 
 
 
-    def compute_weighted_profile(self, with_profiles_vectors_scores= False, k_intersection= 1):
+    def compute_weighted_profile(self, with_profiles_vectors_scores= False, k_intersection= 1, db=None):
         # type:(Clique, bool)->list
-        raw_profiles = self.get_users_profiles()  # raw json from db
+        raw_profiles = self.get_users_profiles(db= db)  # raw json from db
         # profiles_vector = []
         profiles_vector_score = []
         self.get_profile(force_recompute=True, k_intersection= k_intersection)
@@ -261,9 +263,9 @@ class Clique(object):
         return self.clique
 
 
-    def get_users_profiles(self):
+    def get_users_profiles(self, db= None):
         #type:(Clique)->list
-        profiles_cursor = self.profile_dao.getSomeProfiles(list(self.users))  # return a Pymongo cursor
+        profiles_cursor = self.profile_dao.getSomeProfiles(list(self.users), db= db)  # return a Pymongo cursor
         profiles = list(profiles_cursor)
         # profiles = []
         # for p in profiles_cursor:
@@ -298,8 +300,8 @@ class Clique(object):
         print len(user_graphs), 'analyzed profiles'
         return c
 
-    def get_vectors_cohesion(self):
-        profiles_vector_score = self.compute_weighted_profile(with_profiles_vectors_scores= True)
+    def get_vectors_cohesion(self, db= None):
+        profiles_vector_score = self.compute_weighted_profile(with_profiles_vectors_scores= True, db=db)
         return cosine_cohesion_distance_optimized(profiles_vector_score)  # in term of distance
 
 

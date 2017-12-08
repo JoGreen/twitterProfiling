@@ -2,14 +2,18 @@ from twitter_mongodb.twitterdb_instance import DbInstance
 from twitter_api.user_info import UserInfo
 from twitter_profiling.user_profiling.profile_dao import ProfileDao
 import time
+from twitter_clique.clique_dao import get_maximal_cliques, create_dataset
 
 class UserDao:
     db_name = 'twitter'
     port = 27017
     collection = 'twitternetworks'
 
-    def __init__(self):
-        self.db = DbInstance(UserDao.port, UserDao.db_name).getDbInstance()
+    def __init__(self, db= None):
+        if db == None:
+            self.db = DbInstance(UserDao.port, UserDao.db_name).getDbInstance()
+        else:
+            self.db = db
 
 
 
@@ -18,7 +22,9 @@ class UserDao:
         self.db[self.collection].update_one({'id': user_id}, {'$set': {'friends': friends}}, True)
         print(user_id)
 
-    def get_friends(self, user_id):
+    def get_friends(self, user_id, db = None):
+        if db != None:
+            self.db = db
         friends = []
         user_data = self.db[self.collection].find_one({'id': user_id}, {'_id': 0, 'friends': 1})
         if user_data is not None:
@@ -59,9 +65,12 @@ class UserDao:
 
 
     def retrieve_users_friend(self):
-        ids = ProfileDao().get_all_useful_user_ids()
+        clqs = get_maximal_cliques()
+        users_per_clique = [set(clq['nodes']) for clq in clqs]
+        ids = set.union(*users_per_clique)
         ids_owned = UserDao().db[self.collection].find({}).distinct('id')
-        ids_to_retrieve = set(ids).symmetric_difference(ids_owned)
+        ids_to_retrieve = ids.difference(ids_owned)
+        print 'need to retrieve', len(ids_to_retrieve),'users friendship'
         ui = UserInfo()
         #docs = {}
         for id in ids_to_retrieve:
@@ -73,4 +82,6 @@ class UserDao:
             time.sleep(60)
 #print(UserDao().get_friends('120639382') )
 
+
+#create_dataset(37000)
 #UserDao().retrieve_users_friend()

@@ -10,8 +10,10 @@ class DbInstance:
         self.db = MongoClient('localhost', port)
 
 
-    def getDbInstance(self): #deprecated
+    def getDbInstance(self, new_client= False): #deprecated
         #return self.db[self.db_name]#
+        if new_client:
+            return self.db[self.db_name]
         return self.find_db_instance(self.db_name)
 
     def find_db_instance(self, db_name):

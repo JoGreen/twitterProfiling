@@ -2,7 +2,7 @@ from twitter_mongodb.twitterdb_instance import DbInstance
 import itertools
 from bson.objectid import ObjectId
 from pymongo.cursor import Cursor
-from twitter_profiling.user_profiling.user_dao import UserDao
+
 from twitter_profiling.user_profiling.profile_dao import ProfileDao
 import time, sys
 from pymongo.errors import InvalidId
@@ -48,6 +48,7 @@ def get_maximal_cliques_on_valid_users(gt= 7): # doesn t work
     return cliques
 
 def get_maximal_clique_on_specific_users_friendship_count(friendship_count, gt = 7):
+    from twitter_profiling.user_profiling.user_dao import UserDao
     us = UserDao().get_users_with_lt_friends(friendship_count)
     users = [u['id'] for u in us]
 
@@ -122,7 +123,22 @@ def create_dataset(dimension= 1000000):
     print 'dataset created'
 
 
+def count_destribuition_per_num_of_nodes_in_cliques():
+    db = DbInstance(27017, 'twitter').getDbInstance()
+    pipeline = [ {"$group": {'_id': '$count', 'count': {'$sum':1}  }  }  ]
+    destribuition = db[collection].aggregate(pipeline)
+    return destribuition
 
+def clique_destribuition_per_user():
+    db = DbInstance(27017, 'twitter').getDbInstance()
+    pipeline = [
+        {'$unwind':'$nodes'},
+        {'$group':{'_id':'$nodes', 'count':{'$sum': 1 } } },
+        {'$sort':{'count': -1}}
+    ]
+    return db[collection].aggregate(pipeline)
+
+#useful? ??
 def ordered_data_set_aggregaion(dim):
     # type:(int)->Cursor
     db = DbInstance(27017, 'twitter').getDbInstance()
@@ -130,6 +146,8 @@ def ordered_data_set_aggregaion(dim):
     data_set = db[collection].aggregate(pipeline)
     return data_set
 
+
+print list(clique_destribuition_per_user())
 
 # print get_maximal_cliques_on_valid_users().count()
 # clq = {
