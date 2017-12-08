@@ -9,9 +9,9 @@ db_name = 'twitter'
 port = 27017
 percentage = 0.7
 
-def get_internal_mentions(com):
+def get_internal_mentions(com, db= None):
     # type: (Community)->float
-    mentions_grouped_by_user = get_users_tweet(com.users)
+    mentions_grouped_by_user = get_users_tweet(com.users, db= db)
 
     cont = 0
 
@@ -64,9 +64,9 @@ def get_common_hashtag(com):
     return common_hashtags
 
 
-def profiles_overlapping(com):
+def profiles_overlapping(com, db= None):
     # type: (Community)->float
-    profiles = com.get_users_profiles()
+    profiles = com.get_users_profiles(db= db)
     profiles_interests = map(com.get_interests_from_profile, profiles)
     com.get_profile(force_recompute=True, k_intersection= 1)
     results = [float(len(com.get_profile()) )/len(p) for p in profiles_interests ]

@@ -2,32 +2,37 @@ import networkx as nx
 from twitter_profiling.user_profiling.user_dao import UserDao
 # from twitter_profiling.clique_profiling.clique import Clique
 from twitter_profiling.community.community import Community
+from twitter_mongodb.twitterdb_instance import DbInstance
 
 
-def conductance(com, is_conductance_clique = False):
+def conductance(com, is_conductance_clique = False, db= None):
     #type:(Community, bool)-> int
-	inter_links_count = 0
-	# retrieving inter links
-	if is_conductance_clique is True:
-		inter_links_count = len(com.users) * (len(com.users) - 1) / 2
-		print(inter_links_count, 'interlinks number')
-	else:
+    inter_links_count = 0
+    # retrieving inter links
+    if is_conductance_clique is True:
+        inter_links_count = len(com.users) * (len(com.users) - 1) / 2
+        print(inter_links_count, 'interlinks number')
+    else:
+            #db = DbInstance(UserDao.port, UserDao.db_name).getDbInstance(new_client=new_client)
+            friendship = list(UserDao(db= db).get_friends_of(com.users) )
+            igs = map(lambda t: __get_user_inedges(com.users, t['id'], t["friends"]), friendship)
+            ogs = map(lambda t: __get_user_outedges(com.users, t['id'], t["friends"]), friendship)
+    # IG = nx.compose_all(igs, 'internal_graph')
+    # OG = nx.compose_all(ogs, 'outside_graph')
 
-		friendship = list(UserDao().get_friends_of(com.users) )
-		igs = map(lambda t: __get_user_ingraph(com.users, t['id'], t["friends"]), friendship)
-		ogs = map(lambda t: __get_user_outgraph(com.users, t['id'], t["friends"]), friendship)
-	IG = nx.compose_all(igs, 'internal_graph')
-	OG = nx.compose_all(ogs, 'outside_graph')
-	inter_links_count = IG.number_of_edges()
-	boarder_links_count = OG.number_of_edges()
+    IE = set.union(*igs)
+    OE = set.union(*ogs)
 
-	conductance = boarder_links_count / float(2 * inter_links_count + boarder_links_count)
+    inter_links_count = len(IE)
+    boarder_links_count = len(OE)
 
-	#print('boarder_links:', boarder_links_count),
-	#print('internal_links:', inter_links_count)
-	#print('conductance:', conductance)
+    conductance = boarder_links_count / float(2 * inter_links_count + boarder_links_count)
 
-	return conductance
+    #print('boarder_links:', boarder_links_count),
+    #print('internal_links:', inter_links_count)
+    #print('conductance:', conductance)
+
+    return conductance
 
 def __get_user_graphs(user_id, users):
     friends = UserDao().get_friends(user_id)
@@ -45,49 +50,31 @@ def __get_user_graphs(user_id, users):
     return IG, OG
 
 
-def  internal_density(com):
+def  internal_density(com, db= None):
     # type:(Community)->float
-	friendship = UserDao().get_friends_of(com.users)
-	friendship = ((d['id'], d['friends']) for d in friendship)
-	IGs = map(lambda t: __get_user_ingraph(com.users, t[0], t[1]), friendship)
+    #db = DbInstance(UserDao.port, UserDao.db_name).getDbInstance(new_client=new_client)
+    friendship = UserDao(db= db).get_friends_of(com.users, )
+    friendship = ((d['id'], d['friends']) for d in friendship)
+    edges = map(lambda t: __get_user_inedges(com.users, t[0], t[1]), friendship)
 
-	IG = nx.compose_all(IGs)
-	n = len(com.users)
-	return IG.number_of_edges() / (n * (n - 1) / 2.)
+    all_edges = set.union(*edges)
+    n = len(com.users)
+    return len(all_edges) / (n * (n - 1) / 2.)
 
 
 
 
-def __get_user_ingraph(users, user_id, friends ):
+def __get_user_inedges(users, user_id, friends):
     #friends = UserDao().get_friends(user_id)
-    IG = nx.Graph()
-    #OG = nx.Graph()
-    in_edges = set()
-    #out_edges = set()
-    for friend in friends:
-        if friend in users:
-            in_edges.add((user_id, friend) )
-        #else:
-            #out_edges.add((user_id, friend))
-    IG.add_edges_from(in_edges)
-    #OG.add_edges_from(out_edges)
-    return IG#, OG
+    in_edges = [tuple(sorted((user_id, friend))) for friend in friends if friend in users]
+    return set(in_edges)
 
 
-def __get_user_outgraph(users, user_id, friends ):
+
+def __get_user_outedges(users, user_id, friends):
     #friends = UserDao().get_friends(user_id)
-
-	OG = nx.Graph()
-	# edges = set()
-	# out_edges = set()
-	# for friend in friends:
-	#     if not friend in users:
-	#         edges.add((user_id, friend) )
-	edges = ((user_id, friend) for friend in friends if not friend in users)
-	# else:
-	# out_edges.add((user_id, friend))
-	OG.add_edges_from(edges)
-	return OG
+	out_edges = [tuple(sorted((user_id, friend)) ) for friend in friends if not friend in users]
+	return set(out_edges)
 
 def user_conductance(user_id, clique, is_conductance_clique = True):
     # type:(str, Clique, bool)-> int
@@ -120,7 +107,7 @@ def __get_friends_count(users_ids):
     return friends_count
 
 def __launcher(t, users):
-    return __get_user_ingraph(users, *t)
+    return __get_user_inedges(users, *t)
 
 # user_conductance("24518857",Clique(["1977419539",
 # 		"1496545255",
