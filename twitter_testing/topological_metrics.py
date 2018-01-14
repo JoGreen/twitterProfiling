@@ -1,8 +1,8 @@
 import networkx as nx
-from twitter_profiling.user_profiling.user_dao import UserDao
-# from twitter_profiling.clique_profiling.clique import Clique
-from twitter_profiling.community.community import Community
-from twitter_mongodb.twitterdb_instance import DbInstance
+
+from twitter_mongodb.dao.user_dao import UserDao
+# from twitter_com_detection.clique_profiling.clique import Clique
+from twitter_com_detection.community.community import Community
 
 
 def conductance(com, is_conductance_clique = False, db= None):

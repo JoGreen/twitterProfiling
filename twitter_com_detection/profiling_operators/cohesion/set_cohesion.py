@@ -1,6 +1,6 @@
 from itertools import combinations
-from twitter_profiling.profiling_operators.similarity import jaccard
-from twitter_profiling.profiling_operators.means import geometric_mean
+from twitter_com_detection.profiling_operators.similarity import jaccard
+from twitter_com_detection.profiling_operators.means import geometric_mean
 
 
 def compute_cohesion(users):

@@ -1,5 +1,5 @@
 from twitter_api.user_info import UserInfo
-from twitter_profiling.user_profiling.user_dao import UserDao
+from twitter_mongodb.dao.user_dao import UserDao
 
 
 class UndirectedLink:

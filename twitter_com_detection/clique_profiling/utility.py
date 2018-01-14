@@ -1,4 +1,4 @@
-from twitter_clique import clique_dao
+from twitter_mongodb.dao import clique_dao
 
 
 def constructor(doc, delete_if_useless= False):
@@ -11,11 +11,11 @@ def constructor(doc, delete_if_useless= False):
 
 
 def __constr_comm(doc):
-    from twitter_profiling.community.community import Community
+    from twitter_com_detection.community.community import Community
     return Community(None,None,None, **doc)
 
 def __constr_clq(doc, delete_if_useless= False):
-    from twitter_profiling.clique_profiling.clique import Clique
+    from twitter_com_detection.clique_profiling.clique import Clique
     return Clique(doc['nodes'], doc['_id'], delete_if_useless=delete_if_useless)
 
 

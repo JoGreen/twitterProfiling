@@ -1,17 +1,19 @@
 import itertools
-import networkx as nx
-import numpy as np
 import operator
 import sys
 
-from twitter_clique import clique_dao
-from twitter_profiling.clique_profiling.clique import Clique
-from twitter_profiling.clique_profiling.clique_graph import neighbour_graph_with_id
-from twitter_profiling.clique_profiling.utility import constructor
-from twitter_profiling.community.community import Community
-from twitter_profiling.community.dao.community_dao import delete, insert, get_communities_with_specific_cliques, get_communities
-from bson.objectid import ObjectId
+import networkx as nx
+import numpy as np
 from bson.errors import InvalidId
+from bson.objectid import ObjectId
+
+from twitter_mongodb.dao import clique_dao
+from twitter_mongodb.dao.community_dao import delete, insert, get_communities_with_specific_cliques, get_communities
+from twitter_com_detection.clique_profiling.clique import Clique
+from twitter_com_detection.clique_profiling.clique_graph import neighbour_graph_with_id
+from twitter_com_detection.clique_profiling.utility import constructor
+from twitter_com_detection.community.community import Community
+
 
 # import findspark
 # findspark.init()
@@ -285,7 +287,7 @@ def __fusion_4id_graph(communities, src, dst, G):
             return fusion_between_comms(communities, src, dst, G)
 
     else:
-        print 'fusion impossible---error-> it should be a solved bug'
+        #print 'fusion impossible---error-> it should be a solved bug'
 
         comms_retrieved = list(get_communities_with_specific_cliques([src, dst]))
         if len(comms_retrieved) > 0:

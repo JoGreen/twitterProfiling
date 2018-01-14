@@ -1,13 +1,15 @@
-from twitter_mongodb.twitterdb_instance import DbInstance
 import itertools
-from bson.objectid import ObjectId
-from pymongo.cursor import Cursor
+import sys
+import time
 
-from twitter_profiling.user_profiling.profile_dao import ProfileDao
-import time, sys
-from pymongo.errors import InvalidId
+from bson.objectid import ObjectId
 from pymongo import DESCENDING
-from twitter_profiling.community.dao.community_dao import drop
+from pymongo.cursor import Cursor
+from pymongo.errors import InvalidId
+from twitter_com_detection.user_profiling.profile_dao import ProfileDao
+
+from twitter_mongodb.dao.community_dao import drop
+from twitter_mongodb.twitterdb_instance import DbInstance
 
 collection = 'comms'
 
@@ -48,7 +50,7 @@ def get_maximal_cliques_on_valid_users(gt= 7): # doesn t work
     return cliques
 
 def get_maximal_clique_on_specific_users_friendship_count(friendship_count, gt = 7):
-    from twitter_profiling.user_profiling.user_dao import UserDao
+    from twitter_mongodb.dao.user_dao import UserDao
     us = UserDao().get_users_with_lt_friends(friendship_count)
     users = [u['id'] for u in us]
 
@@ -146,8 +148,20 @@ def ordered_data_set_aggregaion(dim):
     data_set = db[collection].aggregate(pipeline)
     return data_set
 
+def mean_of_clq_per_user():
+    destrib = clique_destribuition_per_user()
+    values_clq_per_user = [doc['count'] for doc in destrib]
+    import numpy as np
+    mean_destrib = np.array(values_clq_per_user).mean()
+    print mean_destrib
 
-print list(clique_destribuition_per_user())
+
+
+
+#print mean_of_clq_per_user()
+
+#print len(list(clique_destribuition_per_user() ) )
+#print list(clique_destribuition_per_user())
 
 # print get_maximal_cliques_on_valid_users().count()
 # clq = {

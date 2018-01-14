@@ -1,5 +1,5 @@
 from sklearn.cluster import DBSCAN
-from twitter_profiling.clique_profiling.clique import Clique
+from twitter_com_detection.clique_profiling.clique import Clique
 
 def dbscan_on_clique_neighbourhood(clq):
     # type:(Clique)->dict

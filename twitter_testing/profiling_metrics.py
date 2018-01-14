@@ -1,13 +1,13 @@
-from twitter_profiling.community.community import Community
+from twitter_com_detection.community.community import Community
 from tweet_utility import get_users_tweet
 import numpy as np
-from twitter_profiling.profiling_operators.intersection import minus_k_intersection_linear
+from twitter_com_detection.profiling_operators.intersection import minus_k_intersection_linear
 
 
 collection = 'tweets'
 db_name = 'twitter'
 port = 27017
-percentage = 0.7
+percentage = 0.2
 
 def get_internal_mentions(com, db= None):
     # type: (Community)->float
@@ -26,9 +26,9 @@ def get_internal_mentions(com, db= None):
     #print 'index of internal mentions :', cont/float(len(com.users) ), 'per user'
     return cont
 
-def get_out_mentions(com):
+def get_out_mentions(com, db = None):
     # type: (Community)->float
-    mentions_grouped_by_user = get_users_tweet(com.users)
+    mentions_grouped_by_user = get_users_tweet(com.users, db= db)
 
     cont = 0
 
@@ -43,15 +43,15 @@ def get_out_mentions(com):
     print 'index of out mentions :', cont / float(len(com.users)), 'per user'
     return cont
 
-def get_common_mentions(com):
-    mentions_grouped_by_user = get_users_tweet(com.users)
+def get_common_mentions(com, db = None):
+    mentions_grouped_by_user = get_users_tweet(com.users, db= db)
     mentions = map(lambda doc: set(doc.get('mentions_names') ), mentions_grouped_by_user)
     n_users = len(com.users)
     k = int(n_users * percentage)
 
     common_mentions = minus_k_intersection_linear(mentions, k = k)
-    print 'common_mentions', len(common_mentions), common_mentions
-    return common_mentions
+    #print 'common_mentions', len(common_mentions), common_mentions
+    return len(common_mentions)
 
 def get_common_hashtag(com):
     hashtags_grouped_by_user = get_users_tweet(com.users)

@@ -1,11 +1,12 @@
-from twitter_clique.clique_dao import get_similar_cliques_on_nodes
-from twitter_profiling.clique_profiling.clique import Clique
+from numpy import mean
 from numpy import median
 from numpy import std
-from numpy import mean
-from twitter_profiling.profiling_operators.cohesion.set_cohesion import profiles_cohesion
-from twitter_graph.graph import UndirectedGraph
 from pymongo.cursor import Cursor
+
+from trash.twitter_graph import UndirectedGraph
+from twitter_com_detection.clique_profiling.clique import Clique
+from twitter_com_detection.profiling_operators.cohesion.set_cohesion import profiles_cohesion
+from twitter_mongodb.dao.clique_dao import get_similar_cliques_on_nodes
 
 
 def generate(cliques): #confusional
@@ -57,7 +58,7 @@ def __the_closers(clique, k=1): #move to Clique class ?
 
 
 
-# from twitter_clique import clique_dao
+# from twitter_clique_utilities import clique_dao
 #
 # cliques = clique_dao.get_limit_maximal_cliques(300, 8)
 # g = generate(cliques)

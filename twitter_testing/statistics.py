@@ -1,7 +1,8 @@
-from twitter_profiling.user_profiling.profile_dao import ProfileDao
-from twitter_clique import clique_dao
-
 import numpy as np
+
+from twitter_mongodb.dao import clique_dao
+from twitter_mongodb.dao.profile_dao import ProfileDao
+
 
 def mean_interest_per_user():
     docs = ProfileDao().get_all_useful_profiles()

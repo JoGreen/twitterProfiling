@@ -1,5 +1,5 @@
+from twitter_mongodb.dao.clique_dao import get_maximal_cliques
 from twitter_mongodb.twitterdb_instance import DbInstance
-
 
 collection = 'tweets'
 db_name = 'twitter'
@@ -31,5 +31,12 @@ def get_users_tweet(users_ids, db=None):
     return list(tweets)
 
 
+def clean_tweets_collection():
+    clqs = get_maximal_cliques()
+    users_per_clique = [set(clq['nodes']) for clq in clqs]
+    ids = set.union(*users_per_clique)
+    db = DbInstance(port, db_name).getDbInstance()
+    db[collection].remove({"user":{"$nin": list(ids)} })
 
 
+clean_tweets_collection()

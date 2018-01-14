@@ -1,22 +1,23 @@
 # coding=utf-8
-import numpy as np
-import sys, time
+import sys
 
 import networkx as nx
-# from twitter_clique.clique_dao import get_similar_cliques_on_nodes
+import numpy as np
+from bson.errors import InvalidId
+# from twitter_clique_utilities.clique_dao import get_similar_cliques_on_nodes
 from bson.objectid import ObjectId
 
-from twitter_clique import check_clique
-from twitter_clique.clique_profile_dao import CliqueProfileDao
-from twitter_profiling.community.dao import community_dao
-from twitter_profiling.profiling_operators import intersection
-from twitter_profiling.profiling_operators import similarity
-from twitter_profiling.profiling_operators.cohesion.graph_cohesion import cohesion_of_graph_profiles
-from twitter_profiling.profiling_operators.cohesion.set_cohesion import profiles_cohesion
-from twitter_profiling.profiling_operators.cohesion.vector_cohesion import cosine_cohesion_distance, cosine_cohesion_distance_optimized
-from twitter_profiling.user_profiling.profile_dao import ProfileDao
-from twitter_profiling.clique_profiling.utility import constructor
-from bson.errors import InvalidId
+from twitter_clique_utilities import check_clique
+from twitter_clique_utilities.clique_profile_dao import CliqueProfileDao
+from twitter_mongodb.dao import community_dao
+from twitter_mongodb.dao.profile_dao import ProfileDao
+from twitter_com_detection.clique_profiling.utility import constructor
+from twitter_com_detection.profiling_operators import intersection
+from twitter_com_detection.profiling_operators import similarity
+from twitter_com_detection.profiling_operators.cohesion.graph_cohesion import cohesion_of_graph_profiles
+from twitter_com_detection.profiling_operators.cohesion.set_cohesion import profiles_cohesion
+from twitter_com_detection.profiling_operators.cohesion.vector_cohesion import cosine_cohesion_distance_optimized
+
 
 class Clique(object):
 
@@ -24,6 +25,9 @@ class Clique(object):
     interests_data = {}
     minimum_num_of_interests = 5
     profile_dao = ProfileDao()
+
+    graph_cohesion_threeshold = 1.2
+    vector_cohesion_threeshold = 0.018
 
     def __init__(self, users, id, delete_if_useless= False, **kwargs):
         # type: (list, str) -> None
@@ -47,7 +51,7 @@ class Clique(object):
 
             if delete_if_useless and len(self.get_profile() ) <=  self.minimum_num_of_interests:
                 print 'autodestroying in 3 2 1 cause i m useless sigh sigh siBBBOOOOOOOOOMMMMMMM'
-                community_dao.delete([self.get_id()] )
+                community_dao.delete([self.get_id()])
 
     def __eq__(self, other):
         # type:(Clique, object)->bool
@@ -395,26 +399,24 @@ class Clique(object):
 
     def enough_cohesion(self):
         # type:(self)->bool
-        return self.get_vectors_cohesion() < vector_cohesion_threeshold
+        return self.get_vectors_cohesion() < self.vector_cohesion_threeshold
 
 ###################################################################################
 
 
-#minimum_num_of_interests = 3
 
-graph_cohesion_threeshold = 1.2
-vector_cohesion_threeshold = 0.018 # prima 0.008
+
 
 def get_clique_with_minimum_graph_cohesion(clique):
     # type:(Clique)->dict
     cohesion = clique.get_graph_cohesion()
-    if cohesion < graph_cohesion_threeshold:
+    if cohesion < clique.graph_cohesion_threeshold:
         return {'clique':clique, 'cohesion': cohesion}
 
 def get_clique_with_minimum_vectors_cohesion_and_interests(clique):
     # type:(Clique)->Clique
     cohesion = clique.get_vectors_cohesion()
-    if cohesion < vector_cohesion_threeshold and len(clique.get_profile() ) > clique.minimum_num_of_interests:
+    if cohesion < clique.vector_cohesion_threeshold and len(clique.get_profile() ) > clique.minimum_num_of_interests:
         user_count = {}
         user_count[clique.get_id()] = len(clique.users)
         return {'clique':clique, 'cohesion': cohesion, 'user_count': user_count}
@@ -438,5 +440,5 @@ def get_profile_vector_similarity_between_all(coms):
     return similarity.vector_similarity_between_all(vectors)
 
 
-c = Clique([ "1148580931", "568248162", "456739709", "248254612", "152978469", "124218221", "21710527", "298537212", "52991614", "63525184", "77047730", "91361852", "127340684", "392487826" ],'5946a8f4f810d569224bc865')
-c.get_vectors_cohesion()
+# c = Clique([ "1148580931", "568248162", "456739709", "248254612", "152978469", "124218221", "21710527", "298537212", "52991614", "63525184", "77047730", "91361852", "127340684", "392487826" ],'5946a8f4f810d569224bc865')
+# c.get_vectors_cohesion()

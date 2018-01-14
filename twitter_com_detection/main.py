@@ -1,18 +1,22 @@
-from twitter_clique import clique_dao
-from twitter_profiling.community.dao.community_dao import do_dump
+import math
+import os
+import time
+from multiprocessing import Pool
+
+import matplotlib.pyplot as plt
+import numpy as np
+
 # from clique_profiling.clique import Clique
 from clique_profiling.utility import constructor, destroy_useless_clique
-# from twitter_profiling.clique_profiling.clique_graph import neighbour_graph
-from twitter_profiling.clique_profiling.routines import aggregation_step
-import matplotlib.pyplot as plt, itertools
-
-#from multiprocessing import Pool
-import os, time, math, numpy as np
-from twitter_profiling.clique_clustering.density import dbscan_on_clique_neighbourhood
-from twitter_profiling.clique_profiling.clique import Clique
-from twitter_profiling.community.dao.community_dao import get_count
+from twitter_mongodb.dao import clique_dao
+from twitter_mongodb.dao.community_dao import do_dump, do_restore
+from twitter_mongodb.dao.community_dao import get_count
+from twitter_com_detection.clique_clustering.density import dbscan_on_clique_neighbourhood
+from twitter_com_detection.clique_profiling.clique import Clique
+# from twitter_com_detection.clique_profiling.clique_graph import neighbour_graph
+from twitter_com_detection.routines import aggregation_step
 from twitter_testing.detection_tests import do_statistics
-from twitter_profiling.user_profiling.profile_dao import ProfileDao
+
 
 def cohesion(c):
     clique = constructor(c)#Clique(c['nodes'], str(c['_id']))
@@ -25,7 +29,7 @@ def multithread(numb_proc):
     #cliques = clique_dao.get_limit_maximal_clique_on_specific_users_friendship_count(250, 2000)
     cliques= clique_dao.get_limit_maximal_cliques_on_valid_users(1000) #limit parameter
     print __name__
-    if __name__ == 'twitter_profiling.main':
+    if __name__ == 'twitter_com_detection.main':
         pool = Pool(numb_proc)
         # cohesion_values = []
         clqs = [c for c in cliques]
@@ -208,8 +212,29 @@ def create_folders():
         print 'dumps folder already exists.'
 
 
+def cycle_dump_for_stat(limit_dataset):
+    #####clique_dao.create_dataset(limit_dataset)
+    #do_restore(limit_dataset)
+    #####destroy_useless_clique()
+    n = 37000  # huge number
+    iter = 0
+    #do_statistics(limit_dataset, iter)
+    thereis_file = True
+    iter = iter+1
+    while thereis_file:
+        try:
+            f = open('dumps/dump_' + str(limit_dataset) + '_iter' + str(iter)+ '/twitter/comms.bson', 'r')
+            f.close()
+            do_restore(limit_dataset, iter)
+            do_statistics(limit_dataset, iter)
+            iter = iter + 1
+        except IOError:
+            thereis_file = False
+
 #ProfileDao().get_all_useful_profiles(cache= True)
 
 create_folders()
-map(cycle, datasets)
 
+
+#map(cycle, datasets)
+map(cycle_dump_for_stat, datasets)

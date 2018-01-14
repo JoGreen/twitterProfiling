@@ -1,8 +1,9 @@
-from twitter_mongodb.twitterdb_instance import DbInstance
-from twitter_api.user_info import UserInfo
-from twitter_profiling.user_profiling.profile_dao import ProfileDao
 import time
-from twitter_clique.clique_dao import get_maximal_cliques, create_dataset
+
+from twitter_api.user_info import UserInfo
+from twitter_mongodb.dao.clique_dao import get_maximal_cliques
+from twitter_mongodb.twitterdb_instance import DbInstance
+
 
 class UserDao:
     db_name = 'twitter'

@@ -1,6 +1,6 @@
 from twitter_mongodb.twitterdb_instance import DbInstance
 import sys
-
+# should be useless and not used right now
 class CliqueProfileDao:
     db_name = 'clique_profiles'
     port = 27017

@@ -1,6 +1,6 @@
 import itertools, numpy as np
-from twitter_profiling.profiling_operators.similarity import vector_distance, vector_distance_between_all
-from twitter_profiling.profiling_operators.means import geometric_mean
+from twitter_com_detection.profiling_operators.similarity import vector_distance, vector_distance_between_all
+from twitter_com_detection.profiling_operators.means import geometric_mean
 
 #from multiprocessing import Pool
 

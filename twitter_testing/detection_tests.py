@@ -5,13 +5,13 @@ from threading import Thread
 
 import numpy as np
 
-from twitter_mongodb.twitterdb_instance import DbInstance
-from twitter_profiling.clique_profiling.utility import constructor
-from twitter_profiling.community.dao.community_dao import get_all, get_count
-from twitter_testing.profiling_metrics import profiles_overlapping, get_internal_mentions
+from twitter_mongodb.dao.community_dao import get_all
+from twitter_com_detection.clique_profiling.utility import constructor
+from twitter_testing.profiling_metrics import profiles_overlapping, get_internal_mentions, get_common_mentions
 from twitter_testing.topological_metrics import conductance, internal_density
 
-n_proc = {10:4,100:6,1000:8, 10000:12, 37000:20}
+
+#n_proc = {10:4,100:6,1000:8, 10000:12, 37000:20}
 
 
 def statistics_on_iter(limit_dataset, iter):
@@ -49,13 +49,14 @@ def statistics_on_iter(limit_dataset, iter):
 
 
 def do_statistics(limit_dataset, iter, n = None):
-    try:
-        compression = open('log/compression_performance' + str(limit_dataset) + '.txt', 'a')
-        s = 'iter ' + str(iter) + '\n' + str(n) + ' -> ' + str(get_count()) + '\n'
-        compression.write(s)
-        compression.close()
-    except NameError: pass
-    #statistics_on_iter_multi_process(limit_dataset, iter)
+    #commented for analisys pourpose
+    # try:
+    #     compression = open('log/compression_performance' + str(limit_dataset) + '.txt', 'a')
+    #     s = 'iter ' + str(iter) + '\n' + str(n) + ' -> ' + str(get_count()) + '\n'
+    #     compression.write(s)
+    #     compression.close()
+    # except NameError: pass
+
     statistics_on_iter_multi_process(limit_dataset, iter)
 
 
@@ -73,14 +74,16 @@ def mean_cohesion():
 res =[1,2,3,4,5]
 
 def give_stat_on(doc):
-    db = DbInstance(27017, 'twitter').getDbInstance(new_client=True)
+    #db = DbInstance(27017, 'twitter').getDbInstance(new_client=True)
+    db = None
     com = constructor(doc)
     s1 = com.get_vectors_cohesion(db= db)
     s2 = (conductance(com, db=db))
     s3 = (internal_density(com, db=db))
     s4 = (profiles_overlapping(com, db=db))
     s5 = (get_internal_mentions(com, db=db) / float(len(com.users)))
-    return s1, s2, s3, s4, s5
+    s6 =  get_common_mentions(com, db=db) #/ float(len(com.users))
+    return s1, s2, s3, s4, s5, s6
 
 def give_stat_on_thread(c):
     threads = []
@@ -131,20 +134,23 @@ def statistics_on_iter_multi_process(limit_dataset, iter):
     docs = get_all()
         #comms = [constructor(doc) for doc in docs]
     pool = Pool(cpu_count()- 1)#n_proc[limit_dataset]
-    stat_values = pool.map(give_stat_on, docs)
-    #stat_values = map(give_stat_on, docs)
+    #stat_values = pool.map(give_stat_on, docs)
+    stat_values = map(give_stat_on, docs)
     pool.close()
+    docs.close()
     cohesion_values = [v[0] for v in stat_values]
     conductance_values = [v[1] for v in stat_values]
     internal_density_values = [v[2] for v in stat_values]
     profile_overlapping_percentages = [v[3] for v in stat_values]
     number_internal_mentions_per_user = [v[4] for v in stat_values]
+    number_common_out_mentions_per_user = [v[5] for v in stat_values]
 
     cohesion_mean = np.array(cohesion_values).mean()
     internal_density_mean = np.array(internal_density_values).mean()
     conductance_mean = np.array(conductance_values).mean()
     profile_overlapping_mean = np.array(profile_overlapping_percentages).mean()
     mean_internal_mentions_per_user = np.array(number_internal_mentions_per_user).mean()
+    mean_out_common_mentions_per_user = np.array(number_common_out_mentions_per_user).mean()
 
     file = open('log/statistics_' + str(limit_dataset) + '.txt', 'a')
     s1 = 'iter' + str(iter) + '\n'
@@ -152,7 +158,8 @@ def statistics_on_iter_multi_process(limit_dataset, iter):
     s3 = 'internal_density_mean ' + str(internal_density_mean) + ', '
     s4 = 'conductance_values ' + str(conductance_mean) + ','
     s5 = 'profile_overlapping_mean ' + str(profile_overlapping_mean)+ ', '
-    s6 = 'mean_internal_mentions_per_user ' + str(mean_internal_mentions_per_user) + '\n'
-    file.write(s1 + s2 + s3 + s4 + s5 + s6)
+    s6 = 'mean_internal_mentions_per_user ' + str(mean_internal_mentions_per_user) + ', '
+    s7 = 'mean_common_out_mentions_per_user ' + str(mean_out_common_mentions_per_user) + '\n' #common for 90%users
+    file.write(s1 + s2 + s3 + s4 + s5 + s6+ s7)
     file.close()
     print 'time: ', time.time() - t0

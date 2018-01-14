@@ -1,13 +1,13 @@
 #from twitter_graph.graph import UndirectedGraph
+import itertools
+import numpy as np
+import sys
+
 import networkx as nx
 from networkx.algorithms import approximation
-import matplotlib.pyplot as plt
-from twitter_graph import graph
 from scipy.spatial.distance import cosine
 from sklearn.metrics.pairwise import cosine_distances
-import itertools
 from sklearn.metrics.pairwise import cosine_similarity
-import sys, numpy as np
 
 
 def jaccard(set_a, set_b):
