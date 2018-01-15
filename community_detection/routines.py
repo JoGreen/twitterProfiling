@@ -7,12 +7,12 @@ import numpy as np
 from bson.errors import InvalidId
 from bson.objectid import ObjectId
 
-from twitter_mongodb.dao import clique_dao
-from twitter_mongodb.dao.community_dao import delete, insert, get_communities_with_specific_cliques, get_communities
-from twitter_com_detection.clique_profiling.clique import Clique
-from twitter_com_detection.clique_profiling.clique_graph import neighbour_graph_with_id
-from twitter_com_detection.clique_profiling.utility import constructor
-from twitter_com_detection.community.community import Community
+from persistance_mongo_layer.dao import clique_dao
+from persistance_mongo_layer.dao.community_dao import delete, insert, get_communities_with_specific_cliques, get_communities
+from community_detection.clique_profiling.clique import Clique
+from community_detection.clique_profiling.clique_graph import neighbour_graph_with_id
+from community_detection.clique_profiling.utility import constructor
+from community_detection.community.community import Community
 
 
 # import findspark

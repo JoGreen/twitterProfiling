@@ -3,9 +3,9 @@ import itertools
 import networkx as nx
 from numpy import median, std, mean
 
-from trash.twitter_graph import weighted_graph_mapping
-from twitter_com_detection.profiling_operators.means import geometric_mean
-from twitter_com_detection.profiling_operators.similarity import isomorphism_measure
+from trash.twitter_graph.graph import weighted_graph_mapping
+from community_detection.profiling_operators.means import geometric_mean
+from community_detection.profiling_operators.similarity import isomorphism_measure
 
 
 def cohesion_of_graph_profiles(graphs):

@@ -9,14 +9,14 @@ from bson.objectid import ObjectId
 
 from twitter_clique_utilities import check_clique
 from twitter_clique_utilities.clique_profile_dao import CliqueProfileDao
-from twitter_mongodb.dao import community_dao
-from twitter_mongodb.dao.profile_dao import ProfileDao
-from twitter_com_detection.clique_profiling.utility import constructor
-from twitter_com_detection.profiling_operators import intersection
-from twitter_com_detection.profiling_operators import similarity
-from twitter_com_detection.profiling_operators.cohesion.graph_cohesion import cohesion_of_graph_profiles
-from twitter_com_detection.profiling_operators.cohesion.set_cohesion import profiles_cohesion
-from twitter_com_detection.profiling_operators.cohesion.vector_cohesion import cosine_cohesion_distance_optimized
+from persistance_mongo_layer.dao import community_dao
+from persistance_mongo_layer.dao.profile_dao import ProfileDao
+from community_detection.clique_profiling.utility import constructor
+from community_detection.profiling_operators import intersection
+from community_detection.profiling_operators import similarity
+from community_detection.profiling_operators.cohesion.graph_cohesion import cohesion_of_graph_profiles
+from community_detection.profiling_operators.cohesion.set_cohesion import profiles_cohesion
+from community_detection.profiling_operators.cohesion.vector_cohesion import cosine_cohesion_distance_optimized
 
 
 class Clique(object):

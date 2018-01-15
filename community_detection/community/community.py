@@ -1,4 +1,4 @@
-from twitter_com_detection.clique_profiling.clique import Clique
+from community_detection.clique_profiling.clique import Clique
 import sys, hashlib
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
