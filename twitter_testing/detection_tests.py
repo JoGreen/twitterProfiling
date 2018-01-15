@@ -5,8 +5,9 @@ from threading import Thread
 
 import numpy as np
 
-from twitter_mongodb.dao.community_dao import get_all
-from twitter_com_detection.clique_profiling.utility import constructor
+from persistance_mongo_layer.twitterdb_instance import DbInstance
+from persistance_mongo_layer.dao.community_dao import get_all
+from community_detection.clique_profiling.utility import constructor
 from twitter_testing.profiling_metrics import profiles_overlapping, get_internal_mentions, get_common_mentions
 from twitter_testing.topological_metrics import conductance, internal_density
 
@@ -48,34 +49,26 @@ def statistics_on_iter(limit_dataset, iter):
     print 'time: ', time.time() - t0
 
 
-def do_statistics(limit_dataset, iter, n = None):
+def do_statistics(limit_dataset, iter, n_before = None, n_after = None):
     #commented for analisys pourpose
-    # try:
-    #     compression = open('log/compression_performance' + str(limit_dataset) + '.txt', 'a')
-    #     s = 'iter ' + str(iter) + '\n' + str(n) + ' -> ' + str(get_count()) + '\n'
-    #     compression.write(s)
-    #     compression.close()
-    # except NameError: pass
+    try:
+        if n_before != None and n_after != None:
+            compression = open('log/compression_performance' + str(limit_dataset) + '.txt', 'a')
+            s = 'iter ' + str(iter) + '\n' + str(n_before) + ' -> ' + str(n_after) + '\n'
+            compression.write(s)
+            compression.close()
+    except NameError: pass
 
     statistics_on_iter_multi_process(limit_dataset, iter)
 
 
 
-# not used
-def mean_cohesion():
-    docs = get_all()
-    comms = map(constructor, docs)
-    values = [ c.get_vectors_cohesion() for c in comms]
-    values = np.array(values)
-    value = values.mean()
-    return value
-
 
 res =[1,2,3,4,5]
 
 def give_stat_on(doc):
-    #db = DbInstance(27017, 'twitter').getDbInstance(new_client=True)
-    db = None
+    db = DbInstance().getDbInstance(new_client=True)
+    #db = None
     com = constructor(doc)
     s1 = com.get_vectors_cohesion(db= db)
     s2 = (conductance(com, db=db))
@@ -133,7 +126,7 @@ def statistics_on_iter_multi_process(limit_dataset, iter):
 
     docs = get_all()
         #comms = [constructor(doc) for doc in docs]
-    pool = Pool(cpu_count()- 1)#n_proc[limit_dataset]
+    pool = Pool(cpu_count()- 1)
     #stat_values = pool.map(give_stat_on, docs)
     stat_values = map(give_stat_on, docs)
     pool.close()

@@ -1,7 +1,7 @@
-from twitter_com_detection.community.community import Community
+from community_detection.community.community import Community
 from tweet_utility import get_users_tweet
 import numpy as np
-from twitter_com_detection.profiling_operators.intersection import minus_k_intersection_linear
+from community_detection.profiling_operators.intersection import minus_k_intersection_linear
 
 
 collection = 'tweets'

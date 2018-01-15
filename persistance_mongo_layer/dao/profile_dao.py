@@ -1,4 +1,4 @@
-from twitter_mongodb.twitterdb_instance import DbInstance
+from persistance_mongo_layer.twitterdb_instance import DbInstance
 #from twitter_clique_utilities.clique_dao import get_maximal_cliques, create_dataset
 import operator
 
@@ -9,8 +9,8 @@ class ProfileDao:
     profile_cache = {}
 
     def __init__(self):
-        self.db = DbInstance(ProfileDao.port, ProfileDao.db_name).getDbInstance()
-
+        #self.db = DbInstance(ProfileDao.port, ProfileDao.db_name).getDbInstance()
+        self.db = DbInstance().getDbInstance()
 
     def getAllProfiles(self):
         all = self.db['user_infos'].find()

@@ -1,5 +1,5 @@
 from twitter_api.user_info import UserInfo
-from twitter_mongodb.dao.user_dao import UserDao
+from persistance_mongo_layer.dao.user_dao import UserDao
 
 
 class UndirectedLink:

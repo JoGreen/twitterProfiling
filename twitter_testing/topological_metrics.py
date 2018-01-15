@@ -1,8 +1,8 @@
 import networkx as nx
 
-from twitter_mongodb.dao.user_dao import UserDao
-# from twitter_com_detection.clique_profiling.clique import Clique
-from twitter_com_detection.community.community import Community
+from persistance_mongo_layer.dao.user_dao import UserDao
+# from community_detection.clique_profiling.clique import Clique
+from community_detection.community.community import Community
 
 
 def conductance(com, is_conductance_clique = False, db= None):

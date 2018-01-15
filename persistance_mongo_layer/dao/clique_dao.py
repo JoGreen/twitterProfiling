@@ -6,21 +6,20 @@ from bson.objectid import ObjectId
 from pymongo import DESCENDING
 from pymongo.cursor import Cursor
 from pymongo.errors import InvalidId
-from twitter_com_detection.user_profiling.profile_dao import ProfileDao
+from persistance_mongo_layer.dao.profile_dao import ProfileDao
 
-from twitter_mongodb.dao.community_dao import drop
-from twitter_mongodb.twitterdb_instance import DbInstance
+from persistance_mongo_layer.dao.community_dao import drop
+from persistance_mongo_layer.twitterdb_instance import DbInstance
 
 collection = 'comms'
 
 def get_maximal_cliques(grower_than = 6):
     # type: (int) -> Cursor
-    db = DbInstance(27017, 'twitter').getDbInstance()
-    # cliques = db[collection].find({"count": {"$gt": grower_than}, "com_id":{"$exists": False}},
-    #                                  no_cursor_timeout= True).sort([("count", DESCENDING)])
+    #db = DbInstance(27017, 'twitter').getDbInstance()
+    db = DbInstance().getDbInstance()
     cliques = db[collection].find({"count": {"$gt": grower_than} },
                                   no_cursor_timeout=True).sort([("count", DESCENDING)])
-    # print(type(cliques) )
+
     return cliques
 
 
@@ -43,18 +42,19 @@ def get_maximal_cliques_on_valid_users(gt= 7): # doesn t work
     #for i in range(0, 1929): us.pop()
     print len(us)
 
-    db = DbInstance(27017, 'twitter').getDbInstance()
-
+    #db = DbInstance(27017, 'twitter').getDbInstance()
+    db = DbInstance().getDbInstance()
     cliques = db['cliques2analyze'].find({'nodes':{'$nin': us} ,
                                           'count':{'$gt':gt} }, no_cursor_timeout= True)
     return cliques
 
 def get_maximal_clique_on_specific_users_friendship_count(friendship_count, gt = 7):
-    from twitter_mongodb.dao.user_dao import UserDao
+    from persistance_mongo_layer.dao.user_dao import UserDao
     us = UserDao().get_users_with_lt_friends(friendship_count)
     users = [u['id'] for u in us]
 
-    db = DbInstance(27017, 'twitter').getDbInstance()
+    #db = DbInstance(27017, 'twitter').getDbInstance()
+    db = DbInstance().getDbInstance()
 
     cliques = db[collection].find({'nodes': {'$in': users}, 'count':{'$gt':gt}}, no_cursor_timeout=True)
 
@@ -70,7 +70,8 @@ def get_limit_maximal_clique_on_specific_users_friendship_count(friendship_count
 
 def get_similar_cliques_on_nodes(clique_id, clique_nodes, k=1):  # check if id needs casting to ObjIdMongo
     #type: (str, list[str], int)->Cursor
-    db = DbInstance(27017, 'twitter').getDbInstance()
+    #db = DbInstance(27017, 'twitter').getDbInstance()
+    db = DbInstance().getDbInstance()
     # verifing input
     try:
         clique_nodes = list(clique_nodes)
@@ -107,7 +108,8 @@ def get_cliques(ids):
     except Exception:
         print 'generic error difficult to explain'
         oids = ids
-    db = DbInstance(27017, 'twitter').getDbInstance()
+    #db = DbInstance(27017, 'twitter').getDbInstance()
+    db = DbInstance().getDbInstance()
     cliques = db[collection].find({'_id': {'$in': oids}})
     return cliques
 
@@ -116,7 +118,8 @@ def create_dataset(dimension= 1000000):
     # type: (int)->Cursor
     drop()
     clqs = get_maximal_cliques_on_valid_users().sort([('count', DESCENDING)]).limit(dimension)
-    db = DbInstance(27017, 'twitter').getDbInstance()
+    #db = DbInstance(27017, 'twitter').getDbInstance()
+    db = DbInstance().getDbInstance()
     cliques = list(clqs)
     clqs.close()
     db['comms'].insert_many(cliques)
@@ -126,13 +129,15 @@ def create_dataset(dimension= 1000000):
 
 
 def count_destribuition_per_num_of_nodes_in_cliques():
-    db = DbInstance(27017, 'twitter').getDbInstance()
+    #db = DbInstance(27017, 'twitter').getDbInstance()
+    db = DbInstance().getDbInstance()
     pipeline = [ {"$group": {'_id': '$count', 'count': {'$sum':1}  }  }  ]
     destribuition = db[collection].aggregate(pipeline)
     return destribuition
 
 def clique_destribuition_per_user():
-    db = DbInstance(27017, 'twitter').getDbInstance()
+    #db = DbInstance(27017, 'twitter').getDbInstance()
+    db = DbInstance().getDbInstance()
     pipeline = [
         {'$unwind':'$nodes'},
         {'$group':{'_id':'$nodes', 'count':{'$sum': 1 } } },
@@ -143,7 +148,8 @@ def clique_destribuition_per_user():
 #useful? ??
 def ordered_data_set_aggregaion(dim):
     # type:(int)->Cursor
-    db = DbInstance(27017, 'twitter').getDbInstance()
+    #db = DbInstance(27017, 'twitter').getDbInstance()
+    db = DbInstance().getDbInstance()
     pipeline = [{"$sort":{"count":-1}},{"$limit":dim}]
     data_set = db[collection].aggregate(pipeline)
     return data_set

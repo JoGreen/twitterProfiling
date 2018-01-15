@@ -1,5 +1,5 @@
-from twitter_mongodb.dao.clique_dao import get_maximal_cliques
-from twitter_mongodb.twitterdb_instance import DbInstance
+from persistance_mongo_layer.dao.clique_dao import get_maximal_cliques
+from persistance_mongo_layer.twitterdb_instance import DbInstance
 
 collection = 'tweets'
 db_name = 'twitter'
@@ -13,7 +13,7 @@ def get_users_tweet(users_ids, db=None):
         print 'users ids has to be an iterable'
     #db = DbInstance(port, db_name).getDbInstance(new_client=new_client)
     if db == None:
-        db= DbInstance(port, db_name).getDbInstance()
+        db= DbInstance().getDbInstance()
     pipeline = [
         {"$match":{"user":{"$in":users_ids} } },
         {"$unwind":"$hashtags"},
@@ -39,4 +39,4 @@ def clean_tweets_collection():
     db[collection].remove({"user":{"$nin": list(ids)} })
 
 
-clean_tweets_collection()
+#clean_tweets_collection()

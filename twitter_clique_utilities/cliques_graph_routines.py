@@ -4,9 +4,9 @@ from numpy import std
 from pymongo.cursor import Cursor
 
 from trash.twitter_graph import UndirectedGraph
-from twitter_com_detection.clique_profiling.clique import Clique
-from twitter_com_detection.profiling_operators.cohesion.set_cohesion import profiles_cohesion
-from twitter_mongodb.dao.clique_dao import get_similar_cliques_on_nodes
+from community_detection.clique_profiling.clique import Clique
+from community_detection.profiling_operators.cohesion.set_cohesion import profiles_cohesion
+from persistance_mongo_layer.dao.clique_dao import get_similar_cliques_on_nodes
 
 
 def generate(cliques): #confusional

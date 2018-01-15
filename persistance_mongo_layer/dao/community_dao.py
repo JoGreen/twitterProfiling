@@ -1,4 +1,4 @@
-from twitter_mongodb.twitterdb_instance import DbInstance
+from persistance_mongo_layer.twitterdb_instance import DbInstance
 #from twitter_clique_utilities.clique_dao import get_cliques
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
@@ -13,7 +13,8 @@ threeshold_for_huge_community = 120
 
 def get_similar_community_on_nodes(_id, nodes, k=1):  # check if id needs casting to ObjIdMongo
     #type: (str, list[str], int)->Cursor
-    db = DbInstance(port, db_name).getDbInstance()
+    #db = DbInstance(port, db_name).getDbInstance()
+    db = DbInstance().getDbInstance()
     # verifing input
     try:
         nodes = list(nodes)
@@ -62,7 +63,8 @@ def get_similar_community_on_nodes(_id, nodes, k=1):  # check if id needs castin
 def delete(ids):
     # type:(list[str])->None
 # accept ids of communities or ids of cliques, never at the same time
-    db = DbInstance(port, db_name).getDbInstance()
+    #db = DbInstance(port, db_name).getDbInstance()
+    db = DbInstance().getDbInstance()
     try:
         ids = list(ids)
 
@@ -92,7 +94,8 @@ def insert(comms):
     if comms == None or len(comms) == 0:
         return None # it happens when a clique/communitiy has no neighbours
 
-    db = DbInstance(port, db_name).getDbInstance()
+    db = DbInstance().getDbInstance()
+    #db = DbInstance(port, db_name).getDbInstance()
     try:
         ids = list(comms)
     except TypeError:
@@ -143,13 +146,15 @@ def __converter__(com):
     return doc
 
 def drop():
-    db = DbInstance(port, db_name).getDbInstance()
+    #db = DbInstance(port, db_name).getDbInstance()
+    db = DbInstance().getDbInstance()
     db[collection].drop()
     print 'collection '+collection+' dropped'
 
 
 def get_all():
-    db = DbInstance(port, db_name).getDbInstance()
+    #db = DbInstance(port, db_name).getDbInstance()
+    db = DbInstance().getDbInstance()
     return db[collection].find({}, no_cursor_timeout=True)
 
 def do_dump(limit_dataset, iter):

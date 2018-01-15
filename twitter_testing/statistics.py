@@ -1,7 +1,7 @@
 import numpy as np
 
-from twitter_mongodb.dao import clique_dao
-from twitter_mongodb.dao.profile_dao import ProfileDao
+from persistance_mongo_layer.dao import clique_dao
+from persistance_mongo_layer.dao.profile_dao import ProfileDao
 
 
 def mean_interest_per_user():

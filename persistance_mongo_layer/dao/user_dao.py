@@ -1,18 +1,19 @@
 import time
 
 from twitter_api.user_info import UserInfo
-from twitter_mongodb.dao.clique_dao import get_maximal_cliques
-from twitter_mongodb.twitterdb_instance import DbInstance
+from persistance_mongo_layer.dao.clique_dao import get_maximal_cliques
+from persistance_mongo_layer.twitterdb_instance import DbInstance
 
 
 class UserDao:
-    db_name = 'twitter'
-    port = 27017
+    #db_name = 'twitter'
+    #port = 27017
     collection = 'twitternetworks'
 
     def __init__(self, db= None):
         if db == None:
-            self.db = DbInstance(UserDao.port, UserDao.db_name).getDbInstance()
+            #self.db = DbInstance(UserDao.port, UserDao.db_name).getDbInstance()
+            self.db = DbInstance().getDbInstance()
         else:
             self.db = db
 
