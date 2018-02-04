@@ -21,6 +21,7 @@ class ProfileDao:
         if db == None:
             db = self.db
         try:
+            someUsers = list(someUsers)
             some_profiles = []
             for u in someUsers:
                 some_profiles.append(self.profile_cache[u])

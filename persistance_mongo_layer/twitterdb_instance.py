@@ -1,5 +1,6 @@
 from pymongo import MongoClient
-import db_connections_data
+#import db_connections_data
+import pamir_connection_data as db_connections_data
 
 class DbInstance:
     db = None #not good enough as final solution -> DEPRECATED ?
@@ -15,8 +16,8 @@ class DbInstance:
         else:
             self.db_name = db_name
 
-        self.db = MongoClient(db_connections_data.host, self.port)[self.db_name]
-
+        #self.db = MongoClient(db_connections_data.host, self.port)[self.db_name]
+        self.db = MongoClient(db_connections_data.url)[self.db_name]
 
     def getDbInstance(self, new_client= False): #deprecated
         #return self.db[self.db_name]#
@@ -37,3 +38,6 @@ class DbInstance:
         self.port = port
         self.db_name = db_name
         self.dbs.update({db_name: MongoClient(db_connections_data.host, port)[db_name]})
+
+
+#DbInstance().getDbInstance()['testx'].insert({'lollone':90})
