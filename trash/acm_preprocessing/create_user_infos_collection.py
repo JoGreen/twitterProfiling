@@ -8,6 +8,7 @@
 
 from persistance_mongo_layer.twitterdb_instance import DbInstance
 from trash.acm_crawler import mysql
+from tqdm import tqdm
 
 def topic_mining(author_doc, his_papers):
     # type:(dict, list)-> dict
@@ -48,7 +49,7 @@ topic_occurrencies_in_papers = [o for o in topic_occurrencies_in_papers]
 for paper in papers:
     authors = authors.union(set(paper['nodes'] ) )
 
-for author in authors:
+for author in tqdm(authors):
     author_doc = {
         'user': author,
         'info':{'interests':{'all': {} } }
