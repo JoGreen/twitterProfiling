@@ -6,7 +6,7 @@ from pymongo.cursor import Cursor
 import itertools, time, sys, subprocess
 
 collection = 'comms'
-db_name = 'twitter'
+db_name = None #'twitter'
 port = 27017
 
 threeshold_for_huge_community = 120
@@ -42,7 +42,9 @@ def get_similar_community_on_nodes(_id, nodes, k=1):  # check if id needs castin
             ]
         }
 
-   # n_nodes = len(nodes)
+
+    if (n_nodes - k) < 1:
+        n_nodes = k + 1
     combination_of_nodes = itertools.combinations(nodes, n_nodes - k)
 
 
