@@ -35,6 +35,8 @@ def vector_distance_between_all(vectors):
         print 'vector distance needs array like inputs'
         print vectors
         sys.exit(1)
+    if len(vectors) == 1:
+        return [0.]
     result_matrix = cosine_distances(vectors)
     values = itertools.chain(*(result_matrix.diagonal(l).tolist()  for l in range(1,len(vectors)) ) )
     return values

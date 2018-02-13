@@ -1,7 +1,7 @@
 import time
 
 from twitter_api.user_info import UserInfo
-from persistance_mongo_layer.dao.clique_dao import get_maximal_cliques
+from persistance_mongo_layer.dao.clique_dao import get_order_descending_maximal_cliques
 from persistance_mongo_layer.twitterdb_instance import DbInstance
 
 
@@ -67,7 +67,7 @@ class UserDao:
 
 
     def retrieve_users_friend(self):
-        clqs = get_maximal_cliques()
+        clqs = get_order_descending_maximal_cliques()
         users_per_clique = [set(clq['nodes']) for clq in clqs]
         ids = set.union(*users_per_clique)
         ids_owned = UserDao().db[self.collection].find({}).distinct('id')

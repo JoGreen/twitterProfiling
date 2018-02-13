@@ -1,12 +1,4 @@
-import math
-import os
 import time
-from multiprocessing import Pool
-
-import matplotlib.pyplot as plt
-import numpy as np
-
-# from clique_profiling.clique import Clique
 from clique_profiling.utility import constructor, destroy_useless_clique
 from persistance_mongo_layer.dao import clique_dao
 from persistance_mongo_layer.dao.community_dao import do_dump, do_restore
@@ -16,37 +8,10 @@ from community_detection.clique_profiling.clique import Clique
 
 from community_detection.routines import aggregation_step
 from twitter_testing.detection_tests import do_statistics
-
 from help import inizializing, update_visited_file, create_folders, rename_files
 
 
-def cohesion(c):
-    clique = constructor(c)#Clique(c['nodes'], str(c['_id']))
-    # chs = (clique.get_graph_cohesion())
-    chs = (clique.get_vectors_cohesion() )
-    return chs
 
-def multithread(numb_proc):
-    # type:(int)->list[float]
-    #cliques = clique_dao.get_limit_maximal_clique_on_specific_users_friendship_count(250, 2000)
-    cliques= clique_dao.get_limit_maximal_cliques_on_valid_users(1000) #limit parameter
-    print __name__
-    if __name__ == 'community_detection.main':
-        pool = Pool(numb_proc)
-        # cohesion_values = []
-        clqs = [c for c in cliques]
-        print len(clqs), 'prima del multiprocess'
-        cliques.close()
-        # # cohesion_values = [pool.apply_async(os.getpid, ()) for c in cliques]
-        cohesion_values = pool.map(cohesion, clqs)
-
-
-    # for c in cliques:
-    #     # clique = Clique(c['nodes'], str(c['_id']))
-    #     chs = cohesion(c)
-    #     cohesion_values.append(chs)
-
-        return cohesion_values
 
 
 #####cluster membership
@@ -59,33 +24,7 @@ def cluster_membership():
             clq = constructor(c)# Clique(c['nodes'], c['_id'])
             cluster_memberships = dbscan_on_clique_neighbourhood(clq)
             print cluster_memberships
-
-
-####to plot cohesion values
-def compute_plot_clique_cohesion():
-    proc = 9
-    t0 = time.time()
-    cohesion_values = multithread(proc)
-    t1 = time.time()
-
-    print 'time execution',proc, 'thread=', t1- t0
-
-    cohesion_values.sort()
-    min = cohesion_values[0]
-    max = cohesion_values[-1]
-    bins = 50
-    tick_frequency = (max-min)/ bins
-    if tick_frequency < 1:
-        tick_frequency = (10**(int(math.log10(abs(tick_frequency)))-1) )*5
-        print int(math.log10(abs(tick_frequency))) *(-1)+1
-    print 'tick frequency', tick_frequency, 'min', min,'max', max
-    plt.hist(cohesion_values, int(bins))
-    plt.xticks(np.arange(0, max, tick_frequency))
-    plt.show()
-###########################################
-
-
-
+##############################################################################################
 
 
 datasets = [10, 100, 1000]
@@ -97,7 +36,7 @@ minimum_num_of_interests = Clique.minimum_num_of_interests
 def iteration(limit_dataset, restart = False):
     visited, deleted = inizializing(restart)
 
-    cliques = clique_dao.get_maximal_cliques()
+    cliques = clique_dao.get_order_descending_maximal_cliques()
 
     t_start = time.time()
 
@@ -155,12 +94,6 @@ def cycle(limit_dataset):
 
 
 
-
-
-
-
-
-
 def cycle_dump_for_stat(limit_dataset):
     #####clique_dao.create_dataset(limit_dataset)
     #do_restore(limit_dataset)
@@ -181,9 +114,8 @@ def cycle_dump_for_stat(limit_dataset):
             thereis_file = False
 
 #ProfileDao().get_all_useful_profiles(cache= True)
-
-create_folders()
-
-
-map(cycle, datasets)
-#map(cycle_dump_for_stat, datasets)
+####################################################NORMAL EXECUTION
+#create_folders()
+#map(cycle, datasets)
+###map(cycle_dump_for_stat, datasets)
+####################################################----------------

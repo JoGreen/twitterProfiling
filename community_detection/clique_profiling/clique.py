@@ -17,7 +17,7 @@ from community_detection.profiling_operators import similarity
 from community_detection.profiling_operators.cohesion.graph_cohesion import cohesion_of_graph_profiles
 from community_detection.profiling_operators.cohesion.set_cohesion import profiles_cohesion
 from community_detection.profiling_operators.cohesion.vector_cohesion import cosine_cohesion_distance_optimized
-
+import parameters
 
 class Clique(object):
 
@@ -27,8 +27,9 @@ class Clique(object):
     profile_dao = ProfileDao()
 
     graph_cohesion_threeshold = 1.2
-    vector_cohesion_threeshold = 0.018
-
+    #vector_cohesion_threeshold = 0.018 # used for twitter kaggle dataset
+    vector_cohesion_threshold = parameters.acm["cohesion_threshold"] #0.13
+    k = parameters.acm['k']
     def __init__(self, users, id, delete_if_useless= False, **kwargs):
         # type: (list, str) -> None
 
@@ -137,7 +138,7 @@ class Clique(object):
             index = self.get_profile().index(interest)
             self.weighted_profile[interest] = clique_weights[index]
 
-        if with_profiles_vectors_scores is True:
+        if with_profiles_vectors_scores is True and len(self.get_profile()) > 0:
             return profiles_vector_score
 
 
@@ -306,7 +307,10 @@ class Clique(object):
 
     def get_vectors_cohesion(self, db= None):
         profiles_vector_score = self.compute_weighted_profile(with_profiles_vectors_scores= True, db=db)
-        return cosine_cohesion_distance_optimized(profiles_vector_score)  # in term of distance
+        if profiles_vector_score != None:
+            return cosine_cohesion_distance_optimized(profiles_vector_score)  # in term of distance
+        else:
+            return 1.0
 
 
     def __compute_user_weight_on_clique_knowledge_graph(self, profile):
@@ -354,7 +358,7 @@ class Clique(object):
             # print('error parsing location', e)
             pass
         finally:
-            if (interest_ids != None and len(interest_ids) > 2):
+            if (interest_ids != None and len(interest_ids) > 0):
                 return interest_ids
 
     def __set_interest_data(self, profile):  # profile is a dict
@@ -399,7 +403,7 @@ class Clique(object):
 
     def enough_cohesion(self):
         # type:(self)->bool
-        return self.get_vectors_cohesion() < self.vector_cohesion_threeshold
+        return self.get_vectors_cohesion() < self.vector_cohesion_threshold
 
 ###################################################################################
 
@@ -414,9 +418,9 @@ def get_clique_with_minimum_graph_cohesion(clique):
         return {'clique':clique, 'cohesion': cohesion}
 
 def get_clique_with_minimum_vectors_cohesion_and_interests(clique):
-    # type:(Clique)->Clique
+    # type:(Clique)->dict
     cohesion = clique.get_vectors_cohesion()
-    if cohesion < clique.vector_cohesion_threeshold and len(clique.get_profile() ) > clique.minimum_num_of_interests:
+    if cohesion < clique.vector_cohesion_threshold and len(clique.get_profile()) > clique.minimum_num_of_interests:
         user_count = {}
         user_count[clique.get_id()] = len(clique.users)
         return {'clique':clique, 'cohesion': cohesion, 'user_count': user_count}

@@ -21,7 +21,7 @@ def __constr_clq(doc, delete_if_useless= False):
 
 
 def destroy_useless_clique():
-    clqs = clique_dao.get_maximal_cliques()
+    clqs = clique_dao.get_order_descending_maximal_cliques()
     map(__destroy_if_useless, clqs)
     clqs.close()
 

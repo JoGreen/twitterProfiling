@@ -1,4 +1,4 @@
-from persistance_mongo_layer.dao.clique_dao import get_maximal_cliques
+from persistance_mongo_layer.dao.clique_dao import get_order_descending_maximal_cliques
 from persistance_mongo_layer.twitterdb_instance import DbInstance
 
 collection = 'tweets'
@@ -32,7 +32,7 @@ def get_users_tweet(users_ids, db=None):
 
 
 def clean_tweets_collection():
-    clqs = get_maximal_cliques()
+    clqs = get_order_descending_maximal_cliques()
     users_per_clique = [set(clq['nodes']) for clq in clqs]
     ids = set.union(*users_per_clique)
     db = DbInstance(port, db_name).getDbInstance()

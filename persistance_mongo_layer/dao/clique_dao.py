@@ -15,7 +15,7 @@ collection = 'comms'
 twitter_gt = 7
 dblp_gt = 1
 
-def get_maximal_cliques(grower_than = 6):
+def get_order_descending_maximal_cliques(grower_than = 6):
     # type: (int) -> Cursor
     #db = DbInstance(27017, 'twitter').getDbInstance()
     db = DbInstance().getDbInstance()
@@ -27,7 +27,7 @@ def get_maximal_cliques(grower_than = 6):
 
 def get_limit_maximal_cliques(limit, grower_than = 6):
     # type: (int, int) -> Cursor
-    clq = get_maximal_cliques(grower_than)
+    clq = get_order_descending_maximal_cliques(grower_than)
     clq.limit(limit)
     print(clq.count(), 'total cliques')
     return clq

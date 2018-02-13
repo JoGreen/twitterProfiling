@@ -1,11 +1,9 @@
 from clique import Clique, get_profile_vector_similarity_between_all
 import networkx as nx, operator
 # import matplotlib.pyplot as plt
-from multiprocessing import Pool, freeze_support
-#import itertools
-#from pyspark.sql import SparkSession
-# from pyspark.sql.types import StructType, FloatType, StringType, StructField
-#from graphframes import graphframe as gf
+from multiprocessing import Pool
+import sys
+
 
 max_depth = 2 #increase this value need to re-implement how pass the expanded_cliques variable
 
@@ -13,7 +11,15 @@ max_depth = 2 #increase this value need to re-implement how pass the expanded_cl
 def neighbour_graph_with_id(clq, visited, lev=1):
     # type:(Clique, set([str]), int)->(nx.DiGraph, set([str]) )
     # print 'level',lev,': building_graph ...'
-    neighb2_and_cohesion = clq.get_neighbours(k=1) # return a list of dict with clique and cohesion fields
+    try:
+        k = clq.k
+        if not isinstance(k, int) or not k > 0:
+            raise Exception('k parameter is none')
+    except Exception as e:
+        print 'parameter loading issue --> default k = 1'
+        sys.exit(1)
+
+    neighb2_and_cohesion = clq.get_neighbours(k=k) # return a list of dict with clique and cohesion fields
     if neighb2_and_cohesion is None:
         neighb2_and_cohesion= []
 
@@ -66,7 +72,7 @@ def neighbour_graph_with_id(clq, visited, lev=1):
         expanded_cliques = [n[0].get_id() for n in  neighbours]
         expanded_cliques.append(clq.get_id() )
         expanded_cliques = set(expanded_cliques)
-        # delete_external_nodes(G)
+
         print
         print 'graph built.'
         # return a  graph and a list of clique ids and a map with number of users for community

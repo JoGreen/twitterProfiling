@@ -12,7 +12,8 @@ def geometric_mean(iterable):
         iterable[i] = 1 * 10**(-16)
 
     a = np.array(iterable)
-
+    if len(a) == 0:
+        pass
     return (a* 1.0).prod()**(1.0/len(a))
 
 
