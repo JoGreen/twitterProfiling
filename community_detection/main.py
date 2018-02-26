@@ -3,6 +3,7 @@ from clique_profiling.utility import constructor, destroy_useless_clique
 from persistance_mongo_layer.dao import clique_dao
 from persistance_mongo_layer.dao.community_dao import do_dump, do_restore
 from persistance_mongo_layer.dao.community_dao import get_count as get_com_count
+from persistance_mongo_layer.dao.profile_dao import ProfileDao
 from community_detection.clique_clustering.density import dbscan_on_clique_neighbourhood
 from community_detection.clique_profiling.clique import Clique
 
@@ -27,7 +28,7 @@ def cluster_membership():
 ##############################################################################################
 
 
-datasets = [10, 100, 1000]
+datasets = [500, 1000, 10000]
 
 #limit_dataset = 100
 #clique_dao.create_dataset(limit_dataset)
@@ -113,9 +114,9 @@ def cycle_dump_for_stat(limit_dataset):
         except IOError:
             thereis_file = False
 
-#ProfileDao().get_all_useful_profiles(cache= True)
+ProfileDao().get_all_useful_profiles(cache= True)
 ####################################################NORMAL EXECUTION
-#create_folders()
-#map(cycle, datasets)
+create_folders()
+map(cycle, datasets)
 ###map(cycle_dump_for_stat, datasets)
 ####################################################----------------
