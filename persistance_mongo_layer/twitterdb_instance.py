@@ -22,7 +22,7 @@ class DbInstance:
     def getDbInstance(self, new_client= False): #deprecated
         #return self.db[self.db_name]#
         if new_client:
-            return MongoClient(db_connections_data.host, self.port)[self.db_name]
+            return MongoClient(db_connections_data.url, self.port)[self.db_name]
         #return self.find_db_instance(self.db_name)
         return self.db
 

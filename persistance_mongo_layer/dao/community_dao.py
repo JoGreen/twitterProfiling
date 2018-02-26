@@ -1,15 +1,16 @@
 from persistance_mongo_layer.twitterdb_instance import DbInstance
-#from twitter_clique_utilities.clique_dao import get_cliques
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 from pymongo.cursor import Cursor
 import itertools, time, sys, subprocess
+from persistance_mongo_layer import pamir_connection_data as db_connection_data
 
 collection = 'comms'
-db_name = None #'twitter'
-port = 27017
-
+db_name = db_connection_data.db_name
+#port  = db_connection_data.port
 threeshold_for_huge_community = 120
+
+authentication_string = ' --username ' + db_connection_data.user + ' --password ' + db_connection_data.pwd + ' '
 
 def get_similar_community_on_nodes(_id, nodes, k=1):  # check if id needs casting to ObjIdMongo
     #type: (str, list[str], int)->Cursor
@@ -83,13 +84,7 @@ def delete(ids):
 
 
     db[collection].delete_many(query)
-    # print 'request to delete', len(ids)
-    #print '**********************************************************'
-    ###file = open('deleted_ids.txt', 'a')
-    ###ids_to_write = map(str, ids)
-    ###string_to_write = ",".join(ids_to_write)
-    ###file.write(string_to_write)
-    ###file.close
+
 
 def insert(comms):
     # type:(list[Community])->None
@@ -114,7 +109,7 @@ def get_communities_with_specific_cliques(cliques_ids):
     except TypeError:
         print 'need an iterable to get communities with specific cliques from db '
         sys.exit(1)
-    db = DbInstance(port, db_name).getDbInstance()
+    db = DbInstance().getDbInstance()
     comms = db[collection].find({'cliques': {'$in': cliques_ids}})
     return comms
 
@@ -124,12 +119,12 @@ def get_communities(comm_ids):
     except TypeError:
         print 'need an iterable to get communities with specific cliques from db '
         sys.exit(1)
-    db = DbInstance(port, db_name).getDbInstance()
+    db = DbInstance().getDbInstance()
     comms = db[collection].find({'com_id': {'$in': comm_ids}})
     return comms
 
 def get_count():
-    db = DbInstance(port, db_name).getDbInstance()
+    db = DbInstance().getDbInstance()
     return db[collection].count()
 
 def __converter__(com):
@@ -161,12 +156,12 @@ def get_all():
 
 def do_dump(limit_dataset, iter):
     # type:(int, int)->None
-    cmd = 'mongodump --db twitter --collection comms -o dumps/dump_'+str(limit_dataset)+'_iter'+str(iter)
+    cmd = 'mongodump'+authentication_string+ '--db '+db_name+ ' --collection comms -o dumps/dump_'+str(limit_dataset)+'_iter'+str(iter)
     print subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell= True)
 
 def do_restore(limit_dataset, iter):
     # type:(int, int)->None
     drop()
-    cmd = 'mongorestore --db twitter --collection comms dumps/dump_' + str(limit_dataset) + '_iter' + str(iter)+'/twitter/comms.bson'
+    cmd = 'mongorestore'+authentication_string+ '--db '+db_name+ ' --collection comms dumps/dump_' + str(limit_dataset) + '_iter' + str(iter)+'/twitter/comms.bson'
     print subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
 

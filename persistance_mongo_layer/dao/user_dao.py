@@ -8,7 +8,7 @@ from persistance_mongo_layer.twitterdb_instance import DbInstance
 class UserDao:
     #db_name = 'twitter'
     #port = 27017
-    collection = 'twitternetworks'
+    collection = 'network'
 
     def __init__(self, db= None):
         if db == None:

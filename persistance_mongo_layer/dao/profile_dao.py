@@ -89,4 +89,4 @@ class ProfileDao:
         return DbInstance(ProfileDao.port, ProfileDao.db_name).getDbInstance(new_client=True)
 
 
-#print ProfileDao().get_all_useful_user_ids()
+#print ProfileDao().get_users_without_interests().count()

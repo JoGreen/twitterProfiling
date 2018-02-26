@@ -7,15 +7,16 @@ from pymongo import DESCENDING
 from pymongo.cursor import Cursor
 from pymongo.errors import InvalidId
 from persistance_mongo_layer.dao.profile_dao import ProfileDao
-
+from community_detection.clique_profiling import parameters
 from persistance_mongo_layer.dao.community_dao import drop
 from persistance_mongo_layer.twitterdb_instance import DbInstance
 
 collection = 'comms'
-twitter_gt = 7
-dblp_gt = 1
+twitter_gt = parameters.twitter['gt']
+dblp_gt = parameters.acm['gt']
+gt = dblp_gt
 
-def get_order_descending_maximal_cliques(grower_than = 6):
+def get_order_descending_maximal_cliques(grower_than = gt):
     # type: (int) -> Cursor
     #db = DbInstance(27017, 'twitter').getDbInstance()
     db = DbInstance().getDbInstance()
@@ -25,19 +26,19 @@ def get_order_descending_maximal_cliques(grower_than = 6):
     return cliques
 
 
-def get_limit_maximal_cliques(limit, grower_than = 6):
+def get_limit_maximal_cliques(limit, grower_than = gt):
     # type: (int, int) -> Cursor
     clq = get_order_descending_maximal_cliques(grower_than)
     clq.limit(limit)
     print(clq.count(), 'total cliques')
     return clq
 
-def get_limit_maximal_cliques_on_valid_users(limit, gt=7):
+def get_limit_maximal_cliques_on_valid_users(limit, gt=gt):
     clqs = get_maximal_cliques_on_valid_users(gt= gt)
     clqs.limit(limit)
     return clqs
 
-def get_maximal_cliques_on_valid_users(gt= 7): # doesn t work
+def get_maximal_cliques_on_valid_users(gt= gt): # doesn t work
     us2avoid = ProfileDao().get_users_without_interests()
     print 'users with no interests: ', us2avoid.count()
     us = [u['user'] for u in us2avoid]
@@ -51,7 +52,7 @@ def get_maximal_cliques_on_valid_users(gt= 7): # doesn t work
     print 'cliques retrieved: ', cliques.count()
     return cliques
 
-def get_maximal_clique_on_specific_users_friendship_count(friendship_count, gt = 7):
+def get_maximal_clique_on_specific_users_friendship_count(friendship_count, gt = gt):
     from persistance_mongo_layer.dao.user_dao import UserDao
     us = UserDao().get_users_with_lt_friends(friendship_count)
     users = [u['id'] for u in us]
