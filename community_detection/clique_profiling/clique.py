@@ -23,7 +23,7 @@ class Clique(object):
 
    # user_set_profiles ={}
     interests_data = {}
-    minimum_num_of_interests = 5
+    minimum_num_of_interests = parameters.acm['minimum_num_of_interests']
     profile_dao = ProfileDao()
 
     graph_cohesion_threeshold = 1.2
