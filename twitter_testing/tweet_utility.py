@@ -26,9 +26,21 @@ def get_users_tweet(users_ids, db=None):
             "mentions_names": {"$push": "$mention_name"}
         } }
     ]
-    #print pipeline
+
     tweets = db[collection].aggregate(pipeline)
     return list(tweets)
+
+def get_users_tweet(users_ids, db=None):
+    try:
+        users_ids = list(users_ids)
+    except TypeError:
+        print 'users ids has to be an iterable'
+    #db = DbInstance(port, db_name).getDbInstance(new_client=new_client)
+    if db == None:
+        db= DbInstance().getDbInstance()
+
+
+    return db[collection].find({'user':{'$in':users_ids}})
 
 
 def clean_tweets_collection():
@@ -39,4 +51,5 @@ def clean_tweets_collection():
     db[collection].remove({"user":{"$nin": list(ids)} })
 
 
+#print get_users_tweet(["67613844"])
 #clean_tweets_collection()

@@ -23,7 +23,7 @@ def get_internal_mentions(com, db= None):
             if m in com.users:
                 cont = cont +1
     #print '# internal mentions',cont
-    #print 'index of internal mentions :', cont/float(len(com.users) ), 'per user'
+    print 'index of internal mentions :', cont/float(len(com.users) ), 'per user'
     return cont
 
 def get_out_mentions(com, db = None):
@@ -45,7 +45,7 @@ def get_out_mentions(com, db = None):
 
 def get_common_mentions(com, db = None):
     mentions_grouped_by_user = get_users_tweet(com.users, db= db)
-    mentions = map(lambda doc: set(doc.get('mentions_names') ), mentions_grouped_by_user)
+    mentions = map(lambda doc: set(doc.get('mentions') ), mentions_grouped_by_user)
     n_users = len(com.users)
     k = int(n_users * percentage)
 
@@ -68,6 +68,8 @@ def profiles_overlapping(com, db= None):
     # type: (Community)->float
     profiles = com.get_users_profiles(db= db)
     profiles_interests = map(com.get_interests_from_profile, profiles)
+    if None in profiles_interests: #in profiles there is a profile awith all:{} so it becomes null in profiles intersets
+        pass
     com.get_profile(force_recompute=True, k_intersection= 1)
     results = [float(len(com.get_profile()) )/len(p) for p in profiles_interests ]
     return np.array(results).mean()
@@ -87,7 +89,7 @@ def get_statistics(com):
     o_m = get_out_mentions(com)
     c_m = get_common_mentions(com)
     c_h = get_common_hashtag(com)
-    print c.get_profile_interests_names()
+    print com.get_profile_interests_names()
     v = np.array(profiles_overlapping(com) ).mean()
     print 'mean of profiles overlapping '+str(v)+'%'
     return i_m, o_m, c_m, c_h
