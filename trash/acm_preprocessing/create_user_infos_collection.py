@@ -22,6 +22,10 @@ def topic_mining(author_doc, his_papers):
         for doc_topic in p2topics:
             topic_id = doc_topic['acm_topic_id']
             try:
+                author_doc['info']['interests']['all']
+            except KeyError:
+                author_doc['info']['interests']['all'] = {}
+            try:
                 current_score = author_doc['info']['interests']['all'][topic_id]['score']
                 new_score = current_score + (int(doc_topic['score'] ) * cite_count ) # we could multiply for 1/num occurrencies
                 author_doc['info']['interests']['all'][topic_id]['score'] = new_score
@@ -52,7 +56,7 @@ for paper in papers:
 for author in tqdm(authors):
     author_doc = {
         'user': author,
-        'info':{'interests':{'all': {} } }
+        'info':{'interests':{} }
     }
 
     his_papers = db['cliques2analyze'].find({
