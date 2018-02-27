@@ -4,7 +4,7 @@ from bson.objectid import ObjectId
 from bson.errors import InvalidId
 
 graph_cohesion_threeshold = 1.2
-vector_cohesion_threeshold = 0.018  # 0.008
+vector_cohesion_threeshold = Clique.vector_cohesion_threshold  # 0.008
 
 
 class Community(Clique):
