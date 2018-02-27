@@ -140,6 +140,8 @@ def __converter__(com):
     # del doc['interests_data']
     del doc['profile']
     del doc['users']
+    del doc['clique']
+    del doc ['knowledge_graph']
     return doc
 
 def drop():
