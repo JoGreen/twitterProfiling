@@ -127,8 +127,8 @@ def statistics_on_iter_multi_process(limit_dataset, iter):
     docs = get_all()
         #comms = [constructor(doc) for doc in docs]
     pool = Pool(cpu_count()- 1)
-    #stat_values = pool.map(give_stat_on, docs)
-    stat_values = map(give_stat_on, docs)
+    stat_values = pool.map(give_stat_on, docs)
+    #stat_values = map(give_stat_on, docs)
     pool.close()
     docs.close()
     cohesion_values = [v[0] for v in stat_values]
