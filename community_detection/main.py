@@ -28,7 +28,7 @@ def cluster_membership():
 ##############################################################################################
 
 
-datasets = [500, 1000, 10000]
+datasets = [10000]
 
 
 minimum_num_of_interests = Clique.minimum_num_of_interests
