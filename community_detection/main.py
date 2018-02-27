@@ -28,7 +28,7 @@ def cluster_membership():
 ##############################################################################################
 
 
-datasets = [10000]
+datasets = [500, 1000, 10000]
 
 #limit_dataset = 100
 #clique_dao.create_dataset(limit_dataset)
