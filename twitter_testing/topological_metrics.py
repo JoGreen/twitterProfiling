@@ -61,12 +61,14 @@ def  internal_density(com, db= None):
     friendship = UserDao(db= db).get_friends_of(com.users, )
     friendship = ((d['id'], d['friends']) for d in friendship)
     edges = map(lambda t: __get_user_inedges(com.users, t[0], t[1]), friendship)
-
-    all_edges = set.union(*edges)
-    n = len(com.users)
-    if n == 1 :
-        return 1.
-    return len(all_edges) / (n * (n - 1) / 2.)
+    if len(edges) < 1:
+        return 1.0
+    else:
+        all_edges = set.union(*edges)
+        n = len(com.users)
+        if n == 1 :
+            return 1.
+        return len(all_edges) / (n * (n - 1) / 2.)
 
 
 
