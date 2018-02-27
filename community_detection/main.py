@@ -30,14 +30,14 @@ def cluster_membership():
 
 datasets = [500, 1000, 10000]
 
-#limit_dataset = 100
-#clique_dao.create_dataset(limit_dataset)
+
 minimum_num_of_interests = Clique.minimum_num_of_interests
 
 def iteration(limit_dataset, restart = False):
     visited, deleted = inizializing(restart)
 
-    cliques = clique_dao.get_order_descending_maximal_cliques()
+    #cliques = clique_dao.get_order_descending_maximal_cliques()
+    cliques = clique_dao.get_order_ascending_maximal_cliques()
 
     t_start = time.time()
 

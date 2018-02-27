@@ -3,7 +3,7 @@ import sys
 import time
 
 from bson.objectid import ObjectId
-from pymongo import DESCENDING
+from pymongo import DESCENDING, ASCENDING
 from pymongo.cursor import Cursor
 from pymongo.errors import InvalidId
 from persistance_mongo_layer.dao.profile_dao import ProfileDao
@@ -22,6 +22,15 @@ def get_order_descending_maximal_cliques(grower_than = gt):
     db = DbInstance().getDbInstance()
     cliques = db[collection].find({"count": {"$gt": grower_than} },
                                   no_cursor_timeout=True).sort([("count", DESCENDING)])
+
+    return cliques
+
+def get_order_ascending_maximal_cliques(grower_than = gt):
+    # type: (int) -> Cursor
+    #db = DbInstance(27017, 'twitter').getDbInstance()
+    db = DbInstance().getDbInstance()
+    cliques = db[collection].find({"count": {"$gt": grower_than} },
+                                  no_cursor_timeout=True).sort([("count", ASCENDING)])
 
     return cliques
 
