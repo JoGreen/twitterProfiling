@@ -26,7 +26,7 @@ def conductance(com, is_conductance_clique = False, db= None):
     if len(igs) > 0:
         OE = set.union(*ogs)
     else:
-        OE = []
+        return 0.
 
     inter_links_count = len(IE)
     boarder_links_count = len(OE)
