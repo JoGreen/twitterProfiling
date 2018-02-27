@@ -19,9 +19,14 @@ def conductance(com, is_conductance_clique = False, db= None):
         ogs = map(lambda t: __get_user_outedges(com.users, t['id'], t["friends"]), friendship)
     # IG = nx.compose_all(igs, 'internal_graph')
     # OG = nx.compose_all(ogs, 'outside_graph')
-
-    IE = set.union(*igs)
-    OE = set.union(*ogs)
+    if len(igs) > 0:
+        IE = set.union(*igs)
+    else:
+        IE = []
+    if len(igs) > 0:
+        OE = set.union(*ogs)
+    else:
+        OE = []
 
     inter_links_count = len(IE)
     boarder_links_count = len(OE)
